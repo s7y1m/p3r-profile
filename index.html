@@ -147,7 +147,6 @@
       bottom: 0;
       left: 0;
       height: 100vh;
-      /* Expanded to full screen width so bounds never cross Makoto's image plane */
       width: 100vw; 
       z-index: 3;
       pointer-events: none;
@@ -168,7 +167,6 @@
       object-fit: contain;
       object-position: left bottom;
       
-      /* Stripped out transparent outlines to kill the blue subpixel interpolation glitch */
       border: none !important;
       outline: none !important;
       backface-visibility: hidden;
@@ -277,6 +275,9 @@
 </head>
 <body class="intro-mode">
 
+  <!-- BACKGROUND LOOPING AUDIO ELEMENT -->
+  <audio id="menu-bgm" src="bgm.mp3" loop></audio>
+
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">Press to Start</div>
   </div>
@@ -349,19 +350,30 @@
     }
     loop();
 
+    // --- SYSTEM NAVIGATION ENGINE ---
     const rows = document.querySelectorAll('.menu-item-row');
     const flash = document.getElementById('flash-overlay');
     const startOverlay = document.getElementById('start-overlay');
+    const bgm = document.getElementById('menu-bgm');
 
+    // Handle Start Screen Click Trigger
     startOverlay.addEventListener('click', () => {
       document.body.classList.remove('intro-mode');
       document.body.classList.add('game-active');
 
+      // Play background music track safely
+      bgm.volume = 0.6; // Sets a comfortable 60% system volume
+      bgm.play().catch(error => {
+        console.log("Audio playback prevented by browser settings:", error);
+      });
+
+      // Unleash the navigation flash effect
       flash.classList.remove('flash-trigger');
       void flash.offsetWidth; 
       flash.classList.add('flash-trigger');
     });
 
+    // Handle normal menu choices navigation
     rows.forEach(row => {
       row.addEventListener('click', () => {
         rows.forEach(r => r.classList.remove('selected'));
