@@ -30,6 +30,44 @@
       position: relative;
     }
 
+    /* --- INTRO START SCREEN OVERLAY --- */
+    .start-screen-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 20;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      background: rgba(0, 0, 0, 0.1);
+      transition: opacity 0.4s ease, pointer-events 0.4s;
+    }
+
+    .press-start-text {
+      font-size: 5.5rem;
+      color: #fff;
+      font-style: italic;
+      text-transform: uppercase;
+      text-shadow: 4px 4px 0px var(--active-pink), -2px -2px 0px var(--p3r-royal-blue);
+      letter-spacing: 3px;
+      transform: rotate(-5deg) skewX(-10deg);
+      animation: pulseGlow 1s infinite alternate cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    }
+
+    @keyframes pulseGlow {
+      0% { opacity: 0.2; transform: rotate(-5deg) skewX(-10deg) scale(0.95); filter: drop-shadow(0 0 0px var(--menu-cyan)); }
+      100% { opacity: 1; transform: rotate(-5deg) skewX(-10deg) scale(1.05); filter: drop-shadow(0 0 15px var(--menu-cyan)); }
+    }
+
+    /* Hide Start UI once clicked */
+    body.game-active .start-screen-overlay {
+      opacity: 0;
+      pointer-events: none;
+    }
+
     /* --- FLASH LAYER --- */
     .screen-flash {
       position: absolute;
@@ -72,6 +110,14 @@
       background: #ffffff;
       position: relative;
       box-shadow: 20px 0 40px rgba(0, 0, 0, 0.3);
+      
+      /* Start hidden to the left, slide in on click */
+      transform: translateX(-105%);
+      transition: transform 0.8s cubic-bezier(0.15, 0.85, 0.35, 1);
+    }
+
+    body.game-active .game-left-white-wedge {
+      transform: translateX(0);
     }
 
     .game-left-white-wedge::before {
@@ -87,7 +133,7 @@
       opacity: 0.8;
     }
 
-    /* --- CHARACTER PRESENTATION LAYERS --- */
+    /* --- DYNAMIC POSITIONED CHARACTER LAYER --- */
     .p3r-character-container {
       position: absolute;
       bottom: 0;
@@ -98,6 +144,15 @@
       pointer-events: none;
       display: flex;
       align-items: flex-end;
+      
+      /* Start positioned on the right side of the screen */
+      transform: translateX(45vw);
+      transition: transform 0.8s cubic-bezier(0.15, 0.85, 0.35, 1.02);
+    }
+
+    /* When active, slide Makoto back over to the left side */
+    body.game-active .p3r-character-container {
+      transform: translateX(0);
     }
 
     .p3r-character-art {
@@ -105,22 +160,16 @@
       width: auto;
       object-fit: contain;
       object-position: left bottom;
-      opacity: 0;
       
-      /* ANTI-FLICKER & LINE ELIMINATION PATCHES */
       border: none !important;
       outline: 1px solid transparent;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
       transform: translateZ(0);
-      will-change: transform, opacity;
 
-      /* Fades dark hair sections smoothly into the canvas */
+      /* Dual masking handles left asset blending and smooth right side hair fading */
       -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 98%);
       mask-image: linear-gradient(to right, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 98%);
-
-      transform-origin: bottom left;
-      animation: characterEntrance 0.6s cubic-bezier(0.15, 0.85, 0.35, 1.02) forwards;
     }
 
     /* --- INTERACTIVE MENU COLUMN OVERLAY --- */
@@ -163,8 +212,12 @@
       padding-left: 20px;
       opacity: 0;
       
-      animation: menuElasticIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.25) forwards;
       transition: transform 0.2s cubic-bezier(0.25, 1.25, 0.5, 1.3), color 0.1s ease;
+    }
+
+    /* Menu links only animate into view after passing the start screen click */
+    body.game-active .menu-item-row {
+      animation: menuElasticIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
     }
 
     .menu-item-row:hover {
@@ -196,13 +249,8 @@
     }
 
     /* --- HIGH VELOCITY ANIMATIONS --- */
-    @keyframes characterEntrance {
-      0% { transform: scale(0.95) translateX(-200px) rotate(-2deg); opacity: 0; }
-      100% { transform: scale(1) translateX(0) rotate(0deg); opacity: 1; }
-    }
-
     @keyframes menuElasticIn {
-      0% { opacity: 0; transform: translateX(-120px) scale(0.8) rotateX(20deg); }
+      0% { opacity: 0; transform: translateX(-150px) scale(0.7) rotateX(20deg); }
       100% { opacity: 1; transform: translateX(0) scale(1); }
     }
 
@@ -212,16 +260,18 @@
     }
 
     @keyframes flashAnimation {
-      0% { opacity: 0.6; }
+      0% { opacity: 0.7; }
       100% { opacity: 0; }
     }
 
     .flash-trigger {
-      animation: flashAnimation 0.2s ease-out forwards;
+      animation: flashAnimation 0.25s ease-out forwards;
     }
   </style>
 </head>
-<body>
+<body class="intro-mode"> <div class="start-screen-overlay" id="start-overlay">
+    <div class="press-start-text">Press to Start</div>
+  </div>
 
   <div class="screen-flash" id="flash-overlay"></div>
   <canvas id="ambient-canvas"></canvas>
@@ -291,9 +341,23 @@
     }
     loop();
 
+    // --- GAME START & NAVIGATION CONTROLLER ---
     const rows = document.querySelectorAll('.menu-item-row');
     const flash = document.getElementById('flash-overlay');
+    const startOverlay = document.getElementById('start-overlay');
 
+    // Handle Start Screen Click
+    startOverlay.addEventListener('click', () => {
+      document.body.classList.remove('intro-mode');
+      document.body.classList.add('game-active');
+
+      // Play the iconic bright transition flash
+      flash.classList.remove('flash-trigger');
+      void flash.offsetWidth; 
+      flash.classList.add('flash-trigger');
+    });
+
+    // Handle standard menu options navigation
     rows.forEach(row => {
       row.addEventListener('click', () => {
         rows.forEach(r => r.classList.remove('selected'));
