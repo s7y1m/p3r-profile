@@ -9,8 +9,8 @@
   <style>
     :root {
       --p3r-royal-blue: #002266;
-      --menu-cyan: #38dcff; /* Adjusted to match the exact vibrant P3 neon blue */
-      --active-red: #ff1a40;  /* The high-voltage P3 menu accent red */
+      --menu-cyan: #26e6ff;
+      --active-pink: #ff0055;
     }
 
     * {
@@ -177,13 +177,13 @@
       mask-image: linear-gradient(to right, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 98%);
     }
 
-    /* --- HIGH-VELOCITY STYLIZED MENU SYSTEM (PERSONA 3 RELOAD ENGINE) --- */
+    /* --- RESTORED CASCADING BARREL MENU --- */
     .p3r-game-screen {
       position: relative;
       width: 100%;
       height: 100%;
       display: grid;
-      grid-template-columns: 28% 62% 10%; /* widened midsection to clear text scaling bounds */
+      grid-template-columns: 32% 52% 16%;
       z-index: 4;
     }
 
@@ -195,97 +195,72 @@
     .center-menu-sector {
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      padding-left: 40px;
+      justify-content: center;
+      perspective: 1200px;
     }
 
-    /* The continuous barrel rotation that controls the uniform layout slant */
     .menu-cascading-barrel {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      transform: rotate(-11deg); /* Recreates the exact slant of the original game menu */
+      transform: rotateY(-20deg) rotateZ(-8deg) skewX(-4deg);
+      transform-style: preserve-3d;
+      width: 100%;
     }
 
     .menu-item-row {
-      font-size: 4.8rem;
-      font-weight: 900;
+      font-size: 4.4rem;
       font-style: italic;
-      text-transform: uppercase;
       color: var(--menu-cyan);
-      margin: -6px 0; /* Aggressive vertical compression to force text crowding */
-      letter-spacing: -3px; /* Tight font tracking matches the game graphics */
+      text-transform: uppercase;
+      margin: -12px 0;
       cursor: pointer;
       position: relative;
+      letter-spacing: -1px;
+      padding-left: 20px;
       opacity: 0;
-      transform: skewX(-10deg);
-      display: inline-block;
-      white-space: nowrap;
       
-      transition: transform 0.15s cubic-bezier(0.25, 1, 0.5, 1), color 0.1s ease;
+      transition: transform 0.2s cubic-bezier(0.25, 1.25, 0.5, 1.3), color 0.1s ease;
     }
 
     body.game-active .menu-item-row {
-      animation: menuElasticIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.15) forwards;
+      animation: menuElasticIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
     }
 
     .menu-item-row:hover {
-      color: #ffffff;
-      transform: skewX(-10deg) translateX(20px);
+      color: #fff;
+      transform: translateX(20px) scale(1.03);
     }
 
-    /* Selected Button Styling - Mirroring "SKILL" from image_112e5c.png */
     .menu-item-row.selected {
-      color: #000000 !important; /* Stark black text override */
-      font-size: 5.4rem;
-      margin: 8px 0; /* Pops outward from the stack padding boundaries */
-      padding: 4px 60px 6px 30px;
+      color: #000 !important;
+      font-size: 5.2rem;
       z-index: 10;
-      transform: skewX(-10deg) scale(1.04) translateX(10px);
+      padding: 4px 40px 6px 35px;
+      margin: -2px 0;
+      text-shadow: 3px 3px 0px var(--active-pink);
     }
 
-    /* Sharp, Jagged White Background Wedge Component */
     .menu-item-row.selected::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 4px;
+      left: 0px;
+      width: 85%;
+      height: 90%;
       background: #ffffff;
-      /* Dynamic polygon clipping path to create stylized slate block shapes */
-      clip-path: polygon(0% 0%, 100% 0%, 90% 100%, 4% 100%);
-      z-index: -2;
+      clip-path: polygon(5% 0%, 100% 0%, 93% 100%, 0% 100%);
+      z-index: -1;
       transform-origin: left center;
       animation: violentSlice 0.15s cubic-bezier(0, 0.9, 0.1, 1) forwards;
     }
 
-    /* Dramatic Red Cross-Cutting Accent Slash Component */
-    .menu-item-row.selected::after {
-      content: '';
-      position: absolute;
-      left: -15%;
-      top: 38%;
-      width: 130%;
-      height: 24%;
-      background: var(--active-red);
-      z-index: -1;
-      transform: rotate(-2.5deg);
-      clip-path: polygon(0 20%, 100% 0, 100% 80%, 0 100%);
-      pointer-events: none;
-      transform-origin: left center;
-      animation: violentSlice 0.18s cubic-bezier(0, 0.9, 0.1, 1) forwards;
-    }
-
     /* --- HIGH VELOCITY ANIMATIONS --- */
     @keyframes menuElasticIn {
-      0% { opacity: 0; transform: translateX(-200px) skewX(-10deg) scale(0.6); }
-      100% { opacity: 1; transform: translateX(0) skewX(-10deg) scale(1); }
+      0% { opacity: 0; transform: translateX(-150px) scale(0.7) rotateX(20deg); }
+      100% { opacity: 1; transform: translateX(0) scale(1); }
     }
 
     @keyframes violentSlice {
-      0% { transform: scaleX(0); }
-      100% { transform: scaleX(1); }
+      0% { transform: scaleX(0) skewX(-15deg); }
+      100% { transform: scaleX(1) skewX(0deg); }
     }
 
     @keyframes flashAnimation {
