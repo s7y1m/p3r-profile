@@ -8,7 +8,8 @@
   
   <style>
     :root {
-      --bg-dark-ocean: #010d21;
+      /* Swapped the background to Makoto's deep hair shadow tone */
+      --bg-dark-ocean: #0d1527; 
       --menu-cyan: #26e6ff;
       --active-pink: #ff0055;
     }
@@ -238,9 +239,12 @@
 
     function loop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Dynamic hair color matched gradient stream
       let g = ctx.createRadialGradient(canvas.width*0.75, canvas.height*0.3, 10, canvas.width*0.5, canvas.height*0.5, canvas.width);
-      g.addColorStop(0, '#004f7c');
-      g.addColorStop(0.7, '#010d21');
+      g.addColorStop(0, '#1b2944');   /* Hair mid-tone blue */
+      g.addColorStop(0.7, '#0d1527'); /* Hair deep base shadow */
+      
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
       elements.forEach(e => { e.step(); e.draw(); });
