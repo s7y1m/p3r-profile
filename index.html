@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P3R Social Menu - Ultimate Transition Cut</title>
+  <title>P3R Social Menu - Sub-Page Cut</title>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
   
   <style>
@@ -197,6 +197,12 @@
       z-index: 5;
       padding-right: 8vw;
       pointer-events: none;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    body.subpage-open .p3r-game-screen {
+      opacity: 0;
+      transform: translateX(100px);
+      pointer-events: none;
     }
 
     .menu-cascading-barrel {
@@ -265,44 +271,78 @@
       100% { transform: translateY(-50%) scaleX(1) skewX(0deg); }
     }
 
-    /* --- SOCIAL LINK DETAIL CARD (TRANSITION EFFECT) --- */
-    .social-card-panel {
+    /* --- NEW SUB-PAGE VIEW --- */
+    .p3r-subpage {
       position: absolute;
-      bottom: 8%;
-      right: 8vw;
-      width: 320px;
-      background: rgba(0, 12, 36, 0.85);
-      border-left: 5px solid var(--menu-cyan);
-      border-right: 2px solid var(--active-pink);
-      padding: 15px 25px;
-      transform: skewX(-10deg) translateX(120%);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 6;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      inset: 0;
+      z-index: 12;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+      padding-right: 12vw;
+      opacity: 0;
       pointer-events: none;
+      transform: scale(1.05) skewX(-2deg);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    body.game-active .social-card-panel.active {
-      transform: skewX(-10deg) translateX(0%);
+    body.subpage-open .p3r-subpage {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1) skewX(0deg);
     }
-    .card-title {
-      font-size: 1.2rem;
-      color: var(--menu-cyan);
-      letter-spacing: 2px;
-      margin: 0;
+
+    .subpage-card {
+      width: 45vw;
+      background: rgba(0, 15, 45, 0.9);
+      border-left: 6px solid var(--menu-cyan);
+      border-right: 4px solid var(--active-pink);
+      padding: 40px 50px;
+      transform: skewX(-10deg);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+      position: relative;
     }
-    .card-rank {
-      font-size: 2.2rem;
-      color: #fff;
+
+    .subpage-title {
+      font-size: 5rem;
       font-style: italic;
-      margin: 5px 0;
+      color: #fff;
+      margin: 0 0 10px 0;
       text-transform: uppercase;
+      letter-spacing: 3px;
+      text-shadow: 0 0 20px rgba(38, 230, 255, 0.5);
     }
-    .card-status {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.6);
+
+    .subpage-body {
       font-family: Arial, sans-serif;
-      font-weight: bold;
-      letter-spacing: 1px;
+      font-size: 1.2rem;
+      color: #dce3f0;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    /* P3R BACK BUTTON */
+    .p3r-back-btn {
+      display: inline-block;
+      background: var(--active-pink);
+      color: #fff;
+      font-family: 'Impact', sans-serif;
+      font-size: 2rem;
+      font-style: italic;
+      padding: 12px 45px;
+      clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
+      cursor: pointer;
+      border: none;
+      outline: none;
+      letter-spacing: 2px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 5px 5px 0px #000;
+    }
+    .p3r-back-btn:hover {
+      background: var(--menu-cyan);
+      color: #000;
+      transform: scale(1.08) translateX(-5px);
+      box-shadow: 8px 8px 0px rgba(0,0,0,0.8);
     }
 
     /* --- FULL SCREEN SLASH TRANSITION OVERLAY --- */
@@ -345,9 +385,6 @@
       animation: blink 1.2s infinite;
       text-align: center;
     }
-    .press-subtext {
-      font-size: 1.2rem; color: var(--menu-cyan); letter-spacing: 3px; font-family: Arial, sans-serif; margin-top: 10px;
-    }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
     body.game-active .start-screen-overlay { opacity: 0; pointer-events: none; }
 
@@ -363,10 +400,9 @@
 
   <audio id="menu-bgm" src="bgm.mp3" loop></audio>
 
-  <!-- Intro Screen (Accepts Mouse, Touch, & Keyboard) -->
+  <!-- Intro Screen -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">PRESS ANY BUTTON</div>
-    <div class="press-subtext">[ CLICK / TAP / ANY KEYBOARD KEY ]</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
 
@@ -389,21 +425,23 @@
   <!-- Ambient Light Blur Aura -->
   <div class="character-backlight-blur"></div>
 
-  <!-- Social Detail Card Panel -->
-  <div class="social-card-panel active" id="social-card">
-    <p class="card-title" id="card-platform">SYSTEM CONNECTED</p>
-    <h3 class="card-rank" id="card-rank">INSTAGRAM</h3>
-    <span class="card-status" id="card-status">SOCIAL LINK RANK MAX // ACTIVE</span>
-  </div>
-
   <!-- 3D Menu Layer -->
   <div class="p3r-game-screen">
     <div class="menu-cascading-barrel" id="menu-barrel">
-      <div class="menu-item-row selected" data-platform="Instagram" data-status="@USER // FEED ACTIVE" style="animation-delay: 0.0s;">Instagram</div>
-      <div class="menu-item-row" data-platform="Roblox" data-status="PLAYER ID // LOBBY READY" style="animation-delay: 0.05s;">Roblox</div>
-      <div class="menu-item-row" data-platform="TikTok" data-status="SHORT FEED // TRENDING LIVE" style="animation-delay: 0.10s;">TikTok</div>
-      <div class="menu-item-row" data-platform="YouTube" data-status="CHANNEL // SUBSCRIBED" style="animation-delay: 0.15s;">YouTube</div>
-      <div class="menu-item-row" data-platform="Discord" data-status="VOICE CHANNEL // CONNECTED" style="animation-delay: 0.20s;">Discord</div>
+      <div class="menu-item-row selected" data-platform="Instagram" data-desc="Connecting to Instagram feed... Check out recent photos and updates." style="animation-delay: 0.0s;">Instagram</div>
+      <div class="menu-item-row" data-platform="Roblox" data-desc="Entering Roblox experiences... Join games and community events." style="animation-delay: 0.05s;">Roblox</div>
+      <div class="menu-item-row" data-platform="TikTok" data-desc="Launching TikTok stream... Explore short video content." style="animation-delay: 0.10s;">TikTok</div>
+      <div class="menu-item-row" data-platform="YouTube" data-desc="Opening YouTube channel... Watch latest videos and live broadcasts." style="animation-delay: 0.15s;">YouTube</div>
+      <div class="menu-item-row" data-platform="Discord" data-desc="Connecting to Discord server... Chat with voice and text communities." style="animation-delay: 0.20s;">Discord</div>
+    </div>
+  </div>
+
+  <!-- SUB-PAGE CONTAINER -->
+  <div class="p3r-subpage" id="subpage">
+    <div class="subpage-card">
+      <h1 class="subpage-title" id="subpage-title">INSTAGRAM</h1>
+      <p class="subpage-body" id="subpage-desc">Connecting to Instagram feed... Check out recent photos and updates.</p>
+      <button class="p3r-back-btn" id="back-btn">&lt; RETURN / BACK</button>
     </div>
   </div>
 
@@ -476,12 +514,35 @@
     const blade1 = document.getElementById('blade1');
     const blade2 = document.getElementById('blade2');
     
-    // Social Card Elements
-    const socialCard = document.getElementById('social-card');
-    const cardRank = document.getElementById('card-rank');
-    const cardStatus = document.getElementById('card-status');
+    // Subpage Elements
+    const subpageTitle = document.getElementById('subpage-title');
+    const subpageDesc = document.getElementById('subpage-desc');
+    const backBtn = document.getElementById('back-btn');
 
     let hasStarted = false;
+
+    function triggerTransitions() {
+      // Impact Recoil
+      document.body.classList.remove('impact-active');
+      void document.body.offsetWidth;
+      document.body.classList.add('impact-active');
+
+      // Blade Slash Animation
+      blade1.classList.remove('trigger');
+      blade2.classList.remove('trigger');
+      void blade1.offsetWidth;
+      blade1.classList.add('trigger');
+      blade2.classList.add('trigger');
+
+      // Flash Effect
+      flash.classList.remove('flash-trigger');
+      void flash.offsetWidth; 
+      flash.classList.add('flash-trigger');
+
+      // Character Recoil
+      charArt.classList.add('recoil');
+      setTimeout(() => charArt.classList.remove('recoil'), 150);
+    }
 
     // TRUE "PRESS ANY BUTTON / KEY" HANDLER
     function startExperience() {
@@ -494,60 +555,44 @@
       bgm.volume = 0.5; 
       bgm.play().catch(e => console.log("Audio prep:", e));
 
-      // Trigger Intro Flash
       flash.classList.remove('flash-trigger');
       void flash.offsetWidth; 
       flash.classList.add('flash-trigger');
 
-      // Remove Global Input Listeners once triggered
       window.removeEventListener('keydown', startExperience);
       window.removeEventListener('pointerdown', startExperience);
       
       setTimeout(() => isGameActive = true, 800);
     }
 
-    // Attach true "any button" listeners
     window.addEventListener('keydown', startExperience);
     window.addEventListener('pointerdown', startExperience);
 
-    // --- BUTTON CLICK TRANSITION SYSTEM ---
+    // --- BUTTON CLICK -> SUB-PAGE OPEN ---
     rows.forEach(row => {
-      row.addEventListener('click', (e) => {
-        if(row.classList.contains('selected')) return;
-        
-        // 1. Update Selected State
+      row.addEventListener('click', () => {
         rows.forEach(r => r.classList.remove('selected'));
         row.classList.add('selected');
 
-        // 2. Camera Recoil Impact
-        document.body.classList.remove('impact-active');
-        void document.body.offsetWidth;
-        document.body.classList.add('impact-active');
+        triggerTransitions();
 
-        // 3. Screen Blade Slash Transition Effect
-        blade1.classList.remove('trigger');
-        blade2.classList.remove('trigger');
-        void blade1.offsetWidth;
-        blade1.classList.add('trigger');
-        blade2.classList.add('trigger');
+        // Update Sub-page Info & Open
+        subpageTitle.textContent = row.dataset.platform;
+        subpageDesc.textContent = row.dataset.desc;
 
-        // 4. Screen White Flash Pulse
-        flash.classList.remove('flash-trigger');
-        void flash.offsetWidth; 
-        flash.classList.add('flash-trigger');
-
-        // 5. Character Recoil Shake
-        charArt.classList.add('recoil');
-        setTimeout(() => charArt.classList.remove('recoil'), 150);
-
-        // 6. Dynamic Card Content Transition
-        socialCard.classList.remove('active');
         setTimeout(() => {
-          cardRank.textContent = row.dataset.platform;
-          cardStatus.textContent = row.dataset.status;
-          socialCard.classList.add('active');
+          document.body.classList.add('subpage-open');
         }, 150);
       });
+    });
+
+    // --- BACK BUTTON CLICK -> RETURN TO MENU ---
+    backBtn.addEventListener('click', () => {
+      triggerTransitions();
+
+      setTimeout(() => {
+        document.body.classList.remove('subpage-open');
+      }, 150);
     });
 
     // --- PARALLAX ENGINE ---
