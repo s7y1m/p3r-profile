@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P3R Social Menu - Flawless Cut</title>
+  <title>P3R Social Menu - Ambient Blur Cut</title>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      var(--p3r-cobalt-dark): #002288;
-      var(--p3r-cobalt-base): #0040c8;
-      var(--p3r-cobalt-bright): #0052e0;
+      --p3r-cobalt-dark: #002288;
+      --p3r-cobalt-base: #0040c8;
+      --p3r-cobalt-bright: #0052e0;
       --menu-cyan: #26e6ff;
       --active-pink: #ff0055;
     }
@@ -32,7 +32,7 @@
       position: relative;
     }
 
-    /* --- EXACT MATCH BACKGROUND SCANLINES --- */
+    /* --- BACKGROUND SCANLINES --- */
     .p3r-bg-stripes {
       position: absolute;
       inset: 0;
@@ -109,13 +109,29 @@
       margin-bottom: 50px;
     }
 
-    /* --- CHARACTER CONTAINER (TOP LAYER) --- */
+    /* --- AMBIENT BACKLIGHT BLUR AURA --- */
+    .character-backlight-blur {
+      position: absolute;
+      bottom: -10%;
+      left: 10vw;
+      width: 40vw;
+      height: 90vh;
+      background: radial-gradient(circle, rgba(0, 82, 224, 0.75) 0%, rgba(38, 230, 255, 0.35) 45%, transparent 75%);
+      filter: blur(50px);
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+    body.game-active .character-backlight-blur { opacity: 1; }
+
+    /* --- CHARACTER CONTAINER (INTEGRATED TOP LAYER) --- */
     .p3r-character-container {
       position: absolute;
       bottom: 0; left: 0;
       height: 100vh; width: 100vw; 
-      z-index: 10; /* Bumped to absolute top layer */
-      pointer-events: none; /* Menu underneath remains clickable */
+      z-index: 10;
+      pointer-events: none;
       display: flex; align-items: flex-end;
       overflow: hidden;
       opacity: 0;
@@ -136,23 +152,22 @@
     .p3r-character-art {
       height: 105%; width: auto;
       object-fit: contain; object-position: left bottom;
-      
-      /* Anchor image to bottom-left so scaling never reveals a gap */
       transform-origin: left bottom;
+      opacity: 0.97; /* Soft blend with background light */
       
-      /* Color grading */
+      /* Multi-Stage Blurred Shadow Filters to blend edges naturally */
       filter: 
-        drop-shadow(15px 10px 30px rgba(0, 15, 60, 0.8))
-        contrast(1.1) 
-        saturate(1.15) 
-        brightness(0.92);
+        drop-shadow(0px 0px 45px rgba(0, 30, 140, 0.85)) 
+        drop-shadow(0px 0px 20px rgba(38, 230, 255, 0.4))
+        contrast(1.05) 
+        saturate(1.1) 
+        brightness(0.95);
 
       animation: floatCharacterMirror 4s ease-in-out infinite alternate;
       animation-play-state: paused;
     }
     body.game-active .p3r-character-art { animation-play-state: running; }
 
-    /* Gap Fixed: Used scale() anchored to the bottom instead of translateY() */
     @keyframes floatCharacterMirror {
       0% { transform: scale(1); }
       100% { transform: scale(1.025); }
@@ -278,7 +293,10 @@
     <div class="wedge-text">NETWORK</div>
   </div>
 
-  <!-- 3D Menu Layer (Now properly underneath the character) -->
+  <!-- Ambient Light Blur Aura -->
+  <div class="character-backlight-blur"></div>
+
+  <!-- 3D Menu Layer -->
   <div class="p3r-game-screen">
     <div class="menu-cascading-barrel" id="menu-barrel">
       <div class="menu-item-row selected" style="animation-delay: 0.0s;">Instagram</div>
@@ -289,7 +307,7 @@
     </div>
   </div>
 
-  <!-- Character Container (Top Layer) -->
+  <!-- Integrated Character Layer -->
   <div class="p3r-character-container">
     <div class="character-parallax-wrapper" id="char-wrapper">
       <img src="character.PNG" class="p3r-character-art" alt="Makoto Yuki">
