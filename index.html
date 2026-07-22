@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P3R Social Menu - Atlus Dev Cut</title>
+  <title>P3R Social Menu - Seamless Blend Cut</title>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --p3r-deep-blue: #000c24;
-      --p3r-royal-blue: #0033cc;
+      /* Palette extracted from provided reference image */
+      --p3r-cobalt-dark: #002288;
+      --p3r-cobalt-base: #0040c8;
+      --p3r-cobalt-bright: #0052e0;
       --menu-cyan: #26e6ff;
       --active-pink: #ff0055;
-      --text-muted: rgba(255, 255, 255, 0.3);
     }
 
     * {
@@ -32,40 +33,48 @@
       position: relative;
     }
 
-    /* --- CRT & SCANLINE OVERLAY --- */
-    .scanlines {
+    /* --- EXACT MATCH BACKGROUND SCANLINES --- */
+    .p3r-bg-stripes {
       position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: repeating-linear-gradient(to bottom, transparent, transparent 2px, rgba(0, 0, 0, 0.15) 2px, rgba(0, 0, 0, 0.15) 4px);
-      z-index: 90;
-      pointer-events: none;
-      opacity: 0.8;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        #0033ad,
+        #0033ad 4px,
+        #0042cf 4px,
+        #0042cf 8px
+      );
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.8s ease;
     }
+    body.game-active .p3r-bg-stripes { opacity: 1; }
 
-    /* --- AMBIENT CANVAS BACKGROUND --- */
+    /* --- AMBIENT PARTICLES CANVAS --- */
     #ambient-canvas {
       position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      z-index: 1;
+      inset: 0;
+      z-index: 2;
       pointer-events: none;
       opacity: 0; 
       transition: opacity 0.8s ease;
+      mix-blend-mode: screen;
     }
     body.game-active #ambient-canvas { opacity: 1; }
 
-    /* --- STYLIZED GEOMETRY & TICKER TAPE --- */
+    /* --- BACKGROUND TICKER --- */
     .bg-ticker {
       position: absolute;
-      top: 15%; left: -10%;
-      width: 120%;
-      font-size: 10rem;
-      color: rgba(255, 255, 255, 0.03);
+      top: 18%; left: -10%;
+      width: 140%;
+      font-size: 11rem;
+      color: rgba(255, 255, 255, 0.05);
       white-space: nowrap;
       font-style: italic;
-      z-index: 1;
+      z-index: 2;
       pointer-events: none;
       transform: rotate(-5deg);
-      animation: scrollTicker 30s linear infinite;
+      animation: scrollTicker 35s linear infinite;
     }
     
     @keyframes scrollTicker {
@@ -73,28 +82,15 @@
       100% { transform: rotate(-5deg) translateX(-50%); }
     }
 
-    .ui-ring {
-      position: absolute;
-      border: 2px dashed rgba(38, 230, 255, 0.2);
-      border-radius: 50%;
-      z-index: 2;
-      pointer-events: none;
-      animation: spin 20s linear infinite;
-    }
-    .ring-1 { top: -10%; left: -5%; width: 50vw; height: 50vw; }
-    .ring-2 { bottom: -20%; right: -10%; width: 40vw; height: 40vw; border: 1px solid rgba(255, 0, 85, 0.1); animation: spin 25s linear infinite reverse; }
-
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-
-    /* --- THE WEDGE --- */
+    /* --- THE WHITE WEDGE --- */
     .game-left-white-wedge {
       position: absolute;
       top: 0; left: 0;
-      width: 38vw; height: 100%;
-      background: rgba(255, 255, 255, 0.95);
+      width: 36vw; height: 100%;
+      background: rgba(255, 255, 255, 0.96);
       clip-path: polygon(0 0, 100% 0, 75% 100%, 0% 100%);
-      z-index: 2;
-      box-shadow: 30px 0 50px rgba(0, 0, 0, 0.5);
+      z-index: 3;
+      box-shadow: 25px 0 50px rgba(0, 20, 80, 0.6);
       opacity: 0;
       transform: translateX(-100%);
       transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -107,19 +103,19 @@
     }
     .wedge-text {
       font-size: 14rem;
-      color: #e3e7ee;
+      color: #dce3f0;
       transform: rotate(-90deg) translateY(20px);
       transform-origin: left bottom;
       letter-spacing: -5px;
       margin-bottom: 50px;
     }
 
-    /* --- CHARACTER PARALLAX & FLOAT --- */
+    /* --- SEAMLESS BLENDED CHARACTER CONTAINER --- */
     .p3r-character-container {
       position: absolute;
       bottom: 0; left: 0;
       height: 110vh; width: 100vw; 
-      z-index: 3;
+      z-index: 4;
       pointer-events: none;
       display: flex; align-items: flex-end;
       overflow: hidden;
@@ -128,24 +124,48 @@
     }
     body.game-active .p3r-character-container { opacity: 1; }
 
-    /* This wrapper handles the JS mouse parallax */
+    /* Blue Ambient Overlay to blend sprite into environment light */
+    .p3r-character-container::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(0, 64, 200, 0.35) 0%, rgba(0, 15, 60, 0.5) 100%);
+      mix-blend-mode: color; /* Converts character shadows to ambient blue */
+      pointer-events: none;
+      z-index: 2;
+    }
+
     .character-parallax-wrapper {
       height: 100%; width: 100%;
       display: flex; align-items: flex-end;
-      transform: translateX(45vw); /* Initial offscreen state */
+      transform: translateX(45vw);
       transition: transform 0.8s cubic-bezier(0.15, 0.85, 0.35, 1.02);
     }
     body.game-active .character-parallax-wrapper {
-      transform: translateX(0); /* Slides in, then JS takes over */
+      transform: translateX(0);
     }
 
-    /* This handles the vertical breathing/floating */
     .p3r-character-art {
       height: 105%; width: auto;
       object-fit: contain; object-position: left bottom;
-      /* Harsh P3 style offset shadow */
-      filter: drop-shadow(15px 10px 0px rgba(0, 12, 36, 0.6)) drop-shadow(-2px -2px 0px var(--menu-cyan));
       
+      /* Color grading filters to integrate colors with blue atmosphere */
+      filter: 
+        drop-shadow(15px 10px 30px rgba(0, 15, 60, 0.8))
+        contrast(1.1) 
+        saturate(1.15) 
+        brightness(0.92);
+      
+      /* Multi-directional smooth mask: Fades into dark blue on right and bottom */
+      -webkit-mask-image: 
+        linear-gradient(to right, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 95%),
+        linear-gradient(to top, rgba(0,0,0,1) 90%, rgba(0,0,0,0) 100%);
+      mask-image: 
+        linear-gradient(to right, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 95%),
+        linear-gradient(to top, rgba(0,0,0,1) 90%, rgba(0,0,0,0) 100%);
+      -webkit-mask-composite: source-in;
+      mask-composite: intersect;
+
       animation: floatCharacterMirror 4s ease-in-out infinite alternate;
       animation-play-state: paused;
     }
@@ -156,14 +176,14 @@
       100% { transform: translateY(-3%) scale(1.015); }
     }
 
-    /* --- 3D CASCADING BARREL MENU --- */
+    /* --- 3D MENU LAYER --- */
     .p3r-game-screen {
       position: absolute;
       inset: 0;
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      z-index: 4;
+      z-index: 5;
       padding-right: 8vw;
       pointer-events: none;
     }
@@ -187,11 +207,8 @@
       letter-spacing: 2px;
       padding: 0px 40px;
       opacity: 0;
-      
-      /* Hollow text look for unselected */
       color: transparent;
       -webkit-text-stroke: 1.5px rgba(255,255,255,0.4);
-      
       transition: all 0.2s cubic-bezier(0.25, 1.25, 0.5, 1.3);
     }
 
@@ -199,15 +216,13 @@
       animation: menuElasticIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
     }
 
-    /* Hover State: Fills in and glows cyan */
     .menu-item-row:hover:not(.selected) {
       color: var(--menu-cyan);
       -webkit-text-stroke: 0px;
       transform: translateX(-15px) scale(1.05);
-      text-shadow: 0px 0px 15px rgba(38, 230, 255, 0.6);
+      text-shadow: 0px 0px 15px rgba(38, 230, 255, 0.7);
     }
 
-    /* Selected State: Solid black, pink slash background */
     .menu-item-row.selected {
       color: #000 !important;
       -webkit-text-stroke: 0px;
@@ -216,14 +231,12 @@
       z-index: 10;
     }
 
-    /* The violent pink slash behind selected item */
     .menu-item-row.selected::before {
       content: '';
       position: absolute;
       top: 50%; left: -20%;
       width: 150%; height: 110%;
       background: var(--active-pink);
-      /* Sharp angled polygon */
       clip-path: polygon(0 0, 100% 15%, 95% 100%, 5% 85%);
       z-index: -1;
       transform: translateY(-50%) scaleX(0);
@@ -241,7 +254,7 @@
       100% { transform: translateY(-50%) scaleX(1) skewX(0deg); }
     }
 
-    /* --- FLASH & INTRO --- */
+    /* --- OVERLAYS --- */
     .start-screen-overlay {
       position: absolute; inset: 0; z-index: 20;
       display: flex; justify-content: center; align-items: center;
@@ -261,13 +274,11 @@
     }
     .flash-trigger { animation: flashAnimation 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes flashAnimation { 0% { opacity: 1; } 100% { opacity: 0; } }
-
   </style>
 </head>
 <body class="intro-mode">
 
   <audio id="menu-bgm" src="bgm.mp3" loop></audio>
-  <div class="scanlines"></div>
 
   <!-- Intro Screen -->
   <div class="start-screen-overlay" id="start-overlay">
@@ -276,9 +287,8 @@
   <div class="screen-flash" id="flash-overlay"></div>
 
   <!-- Background Layers -->
+  <div class="p3r-bg-stripes"></div>
   <div class="bg-ticker">SYSTEM PROTOCOL // SOCIAL STATS // TARTARUS NAVIGATION // SYSTEM PROTOCOL // SOCIAL STATS // </div>
-  <div class="ui-ring ring-1"></div>
-  <div class="ui-ring ring-2"></div>
   <canvas id="ambient-canvas"></canvas>
 
   <!-- Left Wedge -->
@@ -286,7 +296,7 @@
     <div class="wedge-text">NETWORK</div>
   </div>
 
-  <!-- Character Container -->
+  <!-- Blended Character Container -->
   <div class="p3r-character-container">
     <div class="character-parallax-wrapper" id="char-wrapper">
       <img src="character.PNG" class="p3r-character-art" alt="Makoto Yuki">
@@ -305,7 +315,7 @@
   </div>
 
   <script>
-    // --- CANVAS GRAPHICS ENGINE (Upgraded Shards) ---
+    // --- AMBIENT SHARDS CANVAS ENGINE ---
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
     let elements = [];
@@ -318,11 +328,11 @@
       constructor() { 
         this.y = Math.random() * canvas.height; 
         this.x = Math.random() * canvas.width; 
-        this.speedY = -(Math.random() * 2 + 1); 
-        this.speedX = (Math.random() - 0.5) * 1;
+        this.speedY = -(Math.random() * 2 + 0.8); 
+        this.speedX = (Math.random() - 0.5) * 0.8;
         this.size = Math.random() * 2 + 0.5;
         this.rot = Math.random() * Math.PI * 2;
-        this.rotSpeed = (Math.random() - 0.5) * 0.05;
+        this.rotSpeed = (Math.random() - 0.5) * 0.04;
       }
       step() {
         this.y += this.speedY;
@@ -343,8 +353,7 @@
         ctx.lineTo(14, 4);
         ctx.lineTo(6, 16);
         ctx.closePath();
-        // Give some shards a solid cyan look, others translucent blue
-        ctx.fillStyle = Math.random() > 0.8 ? 'rgba(38, 230, 255, 0.4)' : 'rgba(0, 85, 255, 0.15)';
+        ctx.fillStyle = Math.random() > 0.7 ? 'rgba(38, 230, 255, 0.45)' : 'rgba(0, 82, 224, 0.25)';
         ctx.fill();
         ctx.restore();
       }
@@ -353,28 +362,17 @@
 
     function loop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Deep P3R Gradient Background
-      let g = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-      g.addColorStop(0, '#000c24');    
-      g.addColorStop(0.5, '#001a66');  
-      g.addColorStop(1, '#000511');    
-      
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
       elements.forEach(e => { e.step(); e.draw(); });
       requestAnimationFrame(loop);
     }
     loop();
 
-    // --- SYSTEM NAVIGATION ENGINE ---
+    // --- NAVIGATION ENGINE ---
     const rows = document.querySelectorAll('.menu-item-row');
     const flash = document.getElementById('flash-overlay');
     const startOverlay = document.getElementById('start-overlay');
     const bgm = document.getElementById('menu-bgm');
 
-    // Start Sequence
     startOverlay.addEventListener('click', () => {
       document.body.classList.remove('intro-mode');
       document.body.classList.add('game-active');
@@ -387,41 +385,34 @@
       flash.classList.add('flash-trigger');
     });
 
-    // Menu Selection
     rows.forEach(row => {
       row.addEventListener('click', () => {
-        if(row.classList.contains('selected')) return; // Prevent re-triggering on same item
+        if(row.classList.contains('selected')) return;
         
         rows.forEach(r => r.classList.remove('selected'));
         row.classList.add('selected');
 
-        // Dynamic Screen Flash on Selection
         flash.classList.remove('flash-trigger');
         void flash.offsetWidth; 
         flash.classList.add('flash-trigger');
       });
     });
 
-    // --- INTERACTIVE MOUSE PARALLAX (The Secret Sauce) ---
+    // --- PARALLAX ENGINE ---
     const charWrapper = document.getElementById('char-wrapper');
     const menuBarrel = document.getElementById('menu-barrel');
     let isGameActive = false;
 
-    // Wait for intro to finish before parallax starts
     startOverlay.addEventListener('click', () => setTimeout(() => isGameActive = true, 800));
 
     document.addEventListener('mousemove', (e) => {
       if (!isGameActive) return;
       
-      // Calculate normalized mouse position (-1 to 1)
       const x = (e.clientX / window.innerWidth - 0.5) * 2;
       const y = (e.clientY / window.innerHeight - 0.5) * 2;
 
-      // Move character subtly opposite to mouse
-      charWrapper.style.transform = `translate(${x * -20}px, ${y * -10}px)`;
-      
-      // Pivot the 3D menu slightly based on mouse
-      menuBarrel.style.transform = `rotateY(${-25 + (x * 10)}deg) rotateZ(${-5 + (y * 2)}deg) skewX(-5deg) translateY(${y * 15}px)`;
+      charWrapper.style.transform = `translate(${x * -18}px, ${y * -8}px)`;
+      menuBarrel.style.transform = `rotateY(${-25 + (x * 8)}deg) rotateZ(${-5 + (y * 2)}deg) skewX(-5deg) translateY(${y * 12}px)`;
     });
   </script>
 </body>
