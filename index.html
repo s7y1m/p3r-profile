@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P3R Social Menu - Ambient Blur Cut</title>
+  <title>P3R Social Menu - Ultimate Transition Cut</title>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
   
   <style>
@@ -30,6 +30,16 @@
       width: 100vw;
       overflow: hidden;
       position: relative;
+    }
+
+    /* Screen Shake/Impact Animation */
+    body.impact-active {
+      animation: cameraImpact 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+    @keyframes cameraImpact {
+      0% { transform: scale(1.03) translate(-8px, -5px) rotate(-0.5deg); }
+      50% { transform: scale(0.99) translate(5px, 3px) rotate(0.3deg); }
+      100% { transform: scale(1) translate(0, 0) rotate(0deg); }
     }
 
     /* --- BACKGROUND SCANLINES --- */
@@ -153,9 +163,8 @@
       height: 105%; width: auto;
       object-fit: contain; object-position: left bottom;
       transform-origin: left bottom;
-      opacity: 0.97; /* Soft blend with background light */
+      opacity: 0.97;
       
-      /* Multi-Stage Blurred Shadow Filters to blend edges naturally */
       filter: 
         drop-shadow(0px 0px 45px rgba(0, 30, 140, 0.85)) 
         drop-shadow(0px 0px 20px rgba(38, 230, 255, 0.4))
@@ -165,8 +174,13 @@
 
       animation: floatCharacterMirror 4s ease-in-out infinite alternate;
       animation-play-state: paused;
+      transition: transform 0.15s ease-out;
     }
     body.game-active .p3r-character-art { animation-play-state: running; }
+
+    .p3r-character-art.recoil {
+      transform: scale(1.06) translate(-10px, -5px) !important;
+    }
 
     @keyframes floatCharacterMirror {
       0% { transform: scale(1); }
@@ -251,18 +265,90 @@
       100% { transform: translateY(-50%) scaleX(1) skewX(0deg); }
     }
 
+    /* --- SOCIAL LINK DETAIL CARD (TRANSITION EFFECT) --- */
+    .social-card-panel {
+      position: absolute;
+      bottom: 8%;
+      right: 8vw;
+      width: 320px;
+      background: rgba(0, 12, 36, 0.85);
+      border-left: 5px solid var(--menu-cyan);
+      border-right: 2px solid var(--active-pink);
+      padding: 15px 25px;
+      transform: skewX(-10deg) translateX(120%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 6;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      pointer-events: none;
+    }
+    body.game-active .social-card-panel.active {
+      transform: skewX(-10deg) translateX(0%);
+    }
+    .card-title {
+      font-size: 1.2rem;
+      color: var(--menu-cyan);
+      letter-spacing: 2px;
+      margin: 0;
+    }
+    .card-rank {
+      font-size: 2.2rem;
+      color: #fff;
+      font-style: italic;
+      margin: 5px 0;
+      text-transform: uppercase;
+    }
+    .card-status {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.6);
+      font-family: Arial, sans-serif;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    /* --- FULL SCREEN SLASH TRANSITION OVERLAY --- */
+    .slash-transition-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 15;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .slash-blade-1, .slash-blade-2 {
+      position: absolute;
+      width: 200vw;
+      height: 120px;
+      top: 40%;
+      left: -50vw;
+      transform: rotate(-15deg) translateY(-1000px);
+    }
+    .slash-blade-1 { background: var(--active-pink); opacity: 0.85; }
+    .slash-blade-2 { background: var(--menu-cyan); opacity: 0.9; height: 60px; top: 48%; }
+
+    .slash-blade-1.trigger { animation: bladeSweep 0.35s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
+    .slash-blade-2.trigger { animation: bladeSweep 0.35s 0.04s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
+
+    @keyframes bladeSweep {
+      0% { transform: rotate(-15deg) translateY(-800px) scaleY(1); }
+      50% { transform: rotate(-15deg) translateY(0px) scaleY(1.8); }
+      100% { transform: rotate(-15deg) translateY(800px) scaleY(0.5); }
+    }
+
     /* --- OVERLAYS --- */
     .start-screen-overlay {
       position: absolute; inset: 0; z-index: 20;
-      display: flex; justify-content: center; align-items: center;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
       cursor: pointer; background: #000;
       transition: opacity 0.5s ease;
     }
     .press-start-text {
-      font-size: 4rem; color: #fff; font-style: italic; letter-spacing: 5px;
-      animation: blink 1.5s infinite;
+      font-size: 3.5rem; color: #fff; font-style: italic; letter-spacing: 4px;
+      animation: blink 1.2s infinite;
+      text-align: center;
     }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .press-subtext {
+      font-size: 1.2rem; color: var(--menu-cyan); letter-spacing: 3px; font-family: Arial, sans-serif; margin-top: 10px;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
     body.game-active .start-screen-overlay { opacity: 0; pointer-events: none; }
 
     .screen-flash {
@@ -277,11 +363,18 @@
 
   <audio id="menu-bgm" src="bgm.mp3" loop></audio>
 
-  <!-- Intro Screen -->
+  <!-- Intro Screen (Accepts Mouse, Touch, & Keyboard) -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">PRESS ANY BUTTON</div>
+    <div class="press-subtext">[ CLICK / TAP / ANY KEYBOARD KEY ]</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
+
+  <!-- Slash Transition Layer -->
+  <div class="slash-transition-layer">
+    <div class="slash-blade-1" id="blade1"></div>
+    <div class="slash-blade-2" id="blade2"></div>
+  </div>
 
   <!-- Background Layers -->
   <div class="p3r-bg-stripes"></div>
@@ -296,21 +389,28 @@
   <!-- Ambient Light Blur Aura -->
   <div class="character-backlight-blur"></div>
 
+  <!-- Social Detail Card Panel -->
+  <div class="social-card-panel active" id="social-card">
+    <p class="card-title" id="card-platform">SYSTEM CONNECTED</p>
+    <h3 class="card-rank" id="card-rank">INSTAGRAM</h3>
+    <span class="card-status" id="card-status">SOCIAL LINK RANK MAX // ACTIVE</span>
+  </div>
+
   <!-- 3D Menu Layer -->
   <div class="p3r-game-screen">
     <div class="menu-cascading-barrel" id="menu-barrel">
-      <div class="menu-item-row selected" style="animation-delay: 0.0s;">Instagram</div>
-      <div class="menu-item-row" style="animation-delay: 0.05s;">Roblox</div>
-      <div class="menu-item-row" style="animation-delay: 0.10s;">TikTok</div>
-      <div class="menu-item-row" style="animation-delay: 0.15s;">YouTube</div>
-      <div class="menu-item-row" style="animation-delay: 0.20s;">Discord</div>
+      <div class="menu-item-row selected" data-platform="Instagram" data-status="@USER // FEED ACTIVE" style="animation-delay: 0.0s;">Instagram</div>
+      <div class="menu-item-row" data-platform="Roblox" data-status="PLAYER ID // LOBBY READY" style="animation-delay: 0.05s;">Roblox</div>
+      <div class="menu-item-row" data-platform="TikTok" data-status="SHORT FEED // TRENDING LIVE" style="animation-delay: 0.10s;">TikTok</div>
+      <div class="menu-item-row" data-platform="YouTube" data-status="CHANNEL // SUBSCRIBED" style="animation-delay: 0.15s;">YouTube</div>
+      <div class="menu-item-row" data-platform="Discord" data-status="VOICE CHANNEL // CONNECTED" style="animation-delay: 0.20s;">Discord</div>
     </div>
   </div>
 
   <!-- Integrated Character Layer -->
   <div class="p3r-character-container">
     <div class="character-parallax-wrapper" id="char-wrapper">
-      <img src="character.PNG" class="p3r-character-art" alt="Makoto Yuki">
+      <img src="character.PNG" class="p3r-character-art" id="char-art" alt="Makoto Yuki">
     </div>
   </div>
 
@@ -367,34 +467,86 @@
     }
     loop();
 
-    // --- NAVIGATION ENGINE ---
+    // --- NAVIGATION & INPUT SYSTEM ---
     const rows = document.querySelectorAll('.menu-item-row');
     const flash = document.getElementById('flash-overlay');
     const startOverlay = document.getElementById('start-overlay');
     const bgm = document.getElementById('menu-bgm');
+    const charArt = document.getElementById('char-art');
+    const blade1 = document.getElementById('blade1');
+    const blade2 = document.getElementById('blade2');
+    
+    // Social Card Elements
+    const socialCard = document.getElementById('social-card');
+    const cardRank = document.getElementById('card-rank');
+    const cardStatus = document.getElementById('card-status');
 
-    startOverlay.addEventListener('click', () => {
+    let hasStarted = false;
+
+    // TRUE "PRESS ANY BUTTON / KEY" HANDLER
+    function startExperience() {
+      if (hasStarted) return;
+      hasStarted = true;
+
       document.body.classList.remove('intro-mode');
       document.body.classList.add('game-active');
 
       bgm.volume = 0.5; 
       bgm.play().catch(e => console.log("Audio prep:", e));
 
+      // Trigger Intro Flash
       flash.classList.remove('flash-trigger');
       void flash.offsetWidth; 
       flash.classList.add('flash-trigger');
-    });
 
+      // Remove Global Input Listeners once triggered
+      window.removeEventListener('keydown', startExperience);
+      window.removeEventListener('pointerdown', startExperience);
+      
+      setTimeout(() => isGameActive = true, 800);
+    }
+
+    // Attach true "any button" listeners
+    window.addEventListener('keydown', startExperience);
+    window.addEventListener('pointerdown', startExperience);
+
+    // --- BUTTON CLICK TRANSITION SYSTEM ---
     rows.forEach(row => {
-      row.addEventListener('click', () => {
+      row.addEventListener('click', (e) => {
         if(row.classList.contains('selected')) return;
         
+        // 1. Update Selected State
         rows.forEach(r => r.classList.remove('selected'));
         row.classList.add('selected');
 
+        // 2. Camera Recoil Impact
+        document.body.classList.remove('impact-active');
+        void document.body.offsetWidth;
+        document.body.classList.add('impact-active');
+
+        // 3. Screen Blade Slash Transition Effect
+        blade1.classList.remove('trigger');
+        blade2.classList.remove('trigger');
+        void blade1.offsetWidth;
+        blade1.classList.add('trigger');
+        blade2.classList.add('trigger');
+
+        // 4. Screen White Flash Pulse
         flash.classList.remove('flash-trigger');
         void flash.offsetWidth; 
         flash.classList.add('flash-trigger');
+
+        // 5. Character Recoil Shake
+        charArt.classList.add('recoil');
+        setTimeout(() => charArt.classList.remove('recoil'), 150);
+
+        // 6. Dynamic Card Content Transition
+        socialCard.classList.remove('active');
+        setTimeout(() => {
+          cardRank.textContent = row.dataset.platform;
+          cardStatus.textContent = row.dataset.status;
+          socialCard.classList.add('active');
+        }, 150);
       });
     });
 
@@ -402,8 +554,6 @@
     const charWrapper = document.getElementById('char-wrapper');
     const menuBarrel = document.getElementById('menu-barrel');
     let isGameActive = false;
-
-    startOverlay.addEventListener('click', () => setTimeout(() => isGameActive = true, 800));
 
     document.addEventListener('mousemove', (e) => {
       if (!isGameActive) return;
