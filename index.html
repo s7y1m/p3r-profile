@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P3R Social Menu - Ultimate Arcade Cut</title>
+  <title>P3R Social Menu - Live HUD Cut</title>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
   
   <style>
@@ -510,13 +510,13 @@
     <div class="slash-blade-2" id="blade2"></div>
   </div>
 
-  <!-- Persona HUD Header -->
+  <!-- Persona Dynamic HUD Header -->
   <div class="p3r-hud-container">
     <div class="hud-main-box">
-      <span class="hud-date">4/11</span>
-      <span class="hud-day">WED</span>
+      <span class="hud-date" id="hud-date">--/--</span>
+      <span class="hud-day" id="hud-day">---</span>
     </div>
-    <div class="hud-period-box">AFTERNOON</div>
+    <div class="hud-period-box" id="hud-period">AFTERNOON</div>
   </div>
 
   <!-- Keyboard Controls Footer Hint -->
@@ -570,6 +570,37 @@
   </div>
 
   <script>
+    // --- LIVE DYNAMIC PERSONA HUD DATE SYSTEM ---
+    function updateHUDDate() {
+      const now = new Date();
+      const month = now.getMonth() + 1;
+      const date = now.getDate();
+      const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+      const dayName = days[now.getDay()];
+
+      document.getElementById('hud-date').textContent = `${month}/${date}`;
+      document.getElementById('hud-day').textContent = dayName;
+
+      // Determine time period
+      const hours = now.getHours();
+      let period = 'AFTERNOON';
+
+      if (hours >= 5 && hours < 12) {
+        period = 'MORNING';
+      } else if (hours >= 12 && hours < 17) {
+        period = 'AFTERNOON';
+      } else if (hours >= 17 && hours < 21) {
+        period = 'EVENING';
+      } else {
+        period = 'DARK HOUR';
+      }
+
+      document.getElementById('hud-period').textContent = period;
+    }
+    
+    // Initialize date instantly on load
+    updateHUDDate();
+
     // --- PROCEDURAL WEB AUDIO SFX ENGINE ---
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
@@ -718,11 +749,12 @@
       setTimeout(() => charArt.classList.remove('recoil'), 150);
     }
 
-    // START EXPERIENCE (Key/Mouse/Touch)
+    // START EXPERIENCE
     function startExperience() {
       if (hasStarted) return;
       hasStarted = true;
       initAudio();
+      updateHUDDate(); // Ensure HUD date is synced when entering
 
       document.body.classList.remove('intro-mode');
       document.body.classList.add('game-active');
