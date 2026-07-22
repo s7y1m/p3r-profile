@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>P3R Social Menu - Mobile Responsive 60 FPS</title>
+  <title>P3R Social Menu - Fixed Audio & Mobile Layout</title>
   <link href="https://fonts.googleapis.com/css2?family=Impact&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -14,8 +14,7 @@
       --menu-cyan: #26e6ff;
       --menu-cyan-glow: rgba(38, 230, 255, 0.6);
       --active-pink: #ff0055;
-      --active-pink-glow: rgba(255, 0, 85, 0.6);
-      --glass-bg: rgba(2, 12, 38, 0.92);
+      --glass-bg: rgba(2, 12, 38, 0.94);
     }
 
     * {
@@ -26,7 +25,7 @@
       touch-action: manipulation;
     }
 
-    body {
+    html, body {
       margin: 0;
       padding: 0;
       background-color: #000; 
@@ -38,7 +37,7 @@
       position: relative;
     }
 
-    /* Screen Shake/Impact Animation */
+    /* Screen Shake Animation */
     body.impact-active {
       animation: cameraImpact 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
@@ -48,21 +47,16 @@
       100% { transform: scale(1) translate(0, 0) rotate(0deg); }
     }
 
-    /* --- HALFTONE MATRIX & SCANLINES --- */
+    /* --- HALFTONE & SCANLINES --- */
     .p3r-bg-stripes {
       position: absolute;
       inset: 0;
       background: repeating-linear-gradient(
-        0deg,
-        #002080,
-        #002080 4px,
-        #0033ad 4px,
-        #0033ad 8px
+        0deg, #002080, #002080 4px, #0033ad 4px, #0033ad 8px
       );
       z-index: 1;
       opacity: 0;
       transition: opacity 0.8s ease;
-      will-change: opacity;
     }
     body.game-active .p3r-bg-stripes { opacity: 1; }
 
@@ -78,7 +72,7 @@
     }
     body.game-active .halftone-overlay { opacity: 1; }
 
-    /* --- AMBIENT PARTICLES CANVAS --- */
+    /* --- CANVAS PARTICLES --- */
     #ambient-canvas {
       position: absolute;
       inset: 0;
@@ -103,15 +97,13 @@
       pointer-events: none;
       transform: rotate(-5deg);
       animation: scrollTicker 35s linear infinite;
-      will-change: transform;
     }
-    
     @keyframes scrollTicker {
       0% { transform: rotate(-5deg) translateX(0); }
       100% { transform: rotate(-5deg) translateX(-50%); }
     }
 
-    /* --- P3R HUD (TOP RIGHT DATE & WEATHER) --- */
+    /* --- HUD HEADER --- */
     .p3r-hud-container {
       position: absolute;
       top: 20px;
@@ -123,7 +115,6 @@
       transform: skewX(-12deg) translateY(-100px);
       transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       opacity: 0;
-      will-change: transform, opacity;
     }
     body.game-active .p3r-hud-container {
       transform: skewX(-12deg) translateY(0);
@@ -141,22 +132,10 @@
       box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.8);
     }
 
-    .hud-date {
-      font-size: 1.8rem;
-      color: #fff;
-      letter-spacing: 1px;
-    }
-    .hud-day {
-      color: var(--menu-cyan);
-      font-size: 1.5rem;
-      text-shadow: 0 0 10px var(--menu-cyan-glow);
-    }
+    .hud-date { font-size: 1.8rem; color: #fff; letter-spacing: 1px; }
+    .hud-day { color: var(--menu-cyan); font-size: 1.5rem; }
 
-    .hud-weather-svg {
-      width: 22px;
-      height: 22px;
-      fill: var(--menu-cyan);
-    }
+    .hud-weather-svg { width: 22px; height: 22px; fill: var(--menu-cyan); }
 
     .hud-period-box {
       background: var(--active-pink);
@@ -170,7 +149,7 @@
       box-shadow: 3px 3px 0px #000;
     }
 
-    /* --- KEYBOARD CONTROLS HUD (BOTTOM LEFT) --- */
+    /* --- DESKTOP KEYBOARD HINTS --- */
     .keyboard-hints {
       position: absolute;
       bottom: 25px;
@@ -181,7 +160,6 @@
       transform: skewX(-10deg) translateY(50px);
       opacity: 0;
       transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: transform, opacity;
     }
     body.game-active .keyboard-hints {
       transform: skewX(-10deg) translateY(0);
@@ -197,11 +175,10 @@
       font-size: 0.9rem;
       color: #fff;
       letter-spacing: 1.5px;
-      box-shadow: 3px 3px 0px #000;
     }
     .key-badge span { color: var(--menu-cyan); }
 
-    /* --- THE WHITE WEDGE --- */
+    /* --- WHITE WEDGE --- */
     .game-left-white-wedge {
       position: absolute;
       top: 0; left: 0;
@@ -209,18 +186,13 @@
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(220, 230, 255, 0.92) 100%);
       clip-path: polygon(0 0, 100% 0, 75% 100%, 0% 100%);
       z-index: 4;
-      box-shadow: 25px 0 50px rgba(0, 20, 80, 0.6);
       opacity: 0;
       transform: translateX(-100%);
       transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       align-items: flex-end;
-      will-change: transform, opacity;
     }
-    body.game-active .game-left-white-wedge {
-      opacity: 1;
-      transform: translateX(0);
-    }
+    body.game-active .game-left-white-wedge { opacity: 1; transform: translateX(0); }
     .wedge-text {
       font-size: 14rem;
       color: #cbd8f0;
@@ -230,24 +202,7 @@
       margin-bottom: 50px;
     }
 
-    /* --- AMBIENT BACKLIGHT BLUR AURA --- */
-    .character-backlight-blur {
-      position: absolute;
-      bottom: -10%;
-      left: 10vw;
-      width: 42vw;
-      height: 90vh;
-      background: radial-gradient(circle, rgba(0, 82, 224, 0.85) 0%, rgba(38, 230, 255, 0.3) 50%, transparent 75%);
-      filter: blur(40px);
-      z-index: 4;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 1s ease;
-      will-change: opacity;
-    }
-    body.game-active .character-backlight-blur { opacity: 1; }
-
-    /* --- CHARACTER CONTAINER --- */
+    /* --- CHARACTER LAYER --- */
     .p3r-character-container {
       position: absolute;
       bottom: 0; left: 0;
@@ -266,39 +221,15 @@
       display: flex; align-items: flex-end;
       transform: translate3d(45vw, 0, 0);
       transition: transform 0.8s cubic-bezier(0.15, 0.85, 0.35, 1.02);
-      will-change: transform;
-      backface-visibility: hidden;
     }
-    body.game-active .character-parallax-wrapper {
-      transform: translate3d(0, 0, 0);
-    }
+    body.game-active .character-parallax-wrapper { transform: translate3d(0, 0, 0); }
 
     .p3r-character-art {
       height: 100%; width: auto;
       object-fit: contain; object-position: left bottom;
-      transform-origin: left bottom;
       opacity: 0.95;
-      will-change: transform;
-      backface-visibility: hidden;
-      
-      filter: 
-        drop-shadow(0px 0px 25px rgba(0, 30, 140, 0.85)) 
-        contrast(1.08) 
-        saturate(1.15);
-
-      animation: floatCharacterMirror 4s ease-in-out infinite alternate;
-      animation-play-state: paused;
+      filter: drop-shadow(0px 0px 25px rgba(0, 30, 140, 0.85));
       transition: transform 0.15s ease-out;
-    }
-    body.game-active .p3r-character-art { animation-play-state: running; }
-
-    .p3r-character-art.recoil {
-      transform: scale(1.05) translate(-10px, -5px) !important;
-    }
-
-    @keyframes floatCharacterMirror {
-      0% { transform: scale(1); }
-      100% { transform: scale(1.02); }
     }
 
     /* --- 3D MENU LAYER --- */
@@ -316,7 +247,6 @@
     body.subpage-open .p3r-game-screen {
       opacity: 0;
       transform: translate3d(80px, 0, 0);
-      pointer-events: none;
     }
 
     .menu-cascading-barrel {
@@ -325,28 +255,25 @@
       perspective: 1000px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 10px;
       pointer-events: auto;
-      will-change: transform;
-      backface-visibility: hidden;
     }
 
     .menu-item-row {
-      font-size: 4.2rem;
+      font-size: 4rem;
       font-style: italic;
       text-transform: uppercase;
       cursor: pointer;
       position: relative;
       letter-spacing: 2px;
-      padding: 0px 35px;
+      padding: 5px 35px;
       opacity: 0;
       color: transparent;
-      -webkit-text-stroke: 1.5px rgba(255,255,255,0.5);
+      -webkit-text-stroke: 1.5px rgba(255,255,255,0.6);
       transition: all 0.2s cubic-bezier(0.25, 1.25, 0.5, 1.3);
       display: flex;
       align-items: center;
-      gap: 12px;
-      will-change: transform, color;
+      gap: 15px;
     }
 
     .menu-item-num {
@@ -354,7 +281,7 @@
       font-weight: 700;
       font-size: 2rem;
       color: var(--menu-cyan);
-      opacity: 0.6;
+      opacity: 0.7;
       font-style: normal;
       -webkit-text-stroke: 0px;
     }
@@ -363,49 +290,37 @@
       animation: menuElasticIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
     }
 
-    .menu-item-row:hover:not(.selected) {
-      color: var(--menu-cyan);
-      -webkit-text-stroke: 0px;
-      transform: translate3d(-10px, 0, 0) scale(1.03);
-    }
-    .menu-item-row:hover:not(.selected) .menu-item-num { opacity: 1; }
-
     .menu-item-row.selected {
       color: #000 !important;
       -webkit-text-stroke: 0px;
-      font-size: 4.6rem;
-      transform: translate3d(-20px, 0, 0) scale(1.08);
+      font-size: 4.4rem;
+      transform: translate3d(-15px, 0, 0);
       z-index: 10;
     }
-    .menu-item-row.selected .menu-item-num {
-      color: #000;
-      opacity: 1;
-    }
+    .menu-item-row.selected .menu-item-num { color: #000; opacity: 1; }
 
     .menu-item-row.selected::before {
       content: '';
       position: absolute;
-      top: 50%; left: -15%;
-      width: 140%; height: 110%;
+      top: 50%; left: -10%;
+      width: 125%; height: 105%;
       background: var(--active-pink);
       clip-path: polygon(0 0, 100% 15%, 95% 100%, 5% 85%);
       z-index: -1;
-      transform: translateY(-50%) scaleX(0);
-      transform-origin: left center;
+      transform: translateY(-50%);
       animation: violentSlice 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-      box-shadow: 8px 8px 0px rgba(0,0,0,0.6);
     }
 
     @keyframes menuElasticIn {
-      0% { opacity: 0; transform: translate3d(80px, 0, 0) rotateX(45deg); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0) rotateX(0deg); }
+      0% { opacity: 0; transform: translate3d(80px, 0, 0); }
+      100% { opacity: 1; transform: translate3d(0, 0, 0); }
     }
     @keyframes violentSlice {
-      0% { transform: translateY(-50%) scaleX(0) skewX(-20deg); }
-      100% { transform: translateY(-50%) scaleX(1) skewX(0deg); }
+      0% { transform: translateY(-50%) scaleX(0); }
+      100% { transform: translateY(-50%) scaleX(1); }
     }
 
-    /* --- GLASSMORPHIC SUB-PAGE VIEW --- */
+    /* --- SUB-PAGE overlay --- */
     .p3r-subpage {
       position: absolute;
       inset: 0;
@@ -414,51 +329,35 @@
       flex-direction: column;
       justify-content: center;
       align-items: flex-end;
-      padding-right: 6vw;
+      padding-right: 8vw;
       opacity: 0;
       pointer-events: none;
-      transform: scale(1.05) skewX(-2deg);
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      will-change: transform, opacity;
     }
     body.subpage-open .p3r-subpage {
       opacity: 1;
       pointer-events: auto;
-      transform: scale(1) skewX(0deg);
     }
 
     .subpage-card {
-      width: 48vw;
+      width: 45vw;
+      max-width: 600px;
       background: var(--glass-bg);
       backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
       border-left: 5px solid var(--menu-cyan);
       border-right: 4px solid var(--active-pink);
-      padding: 35px 40px;
-      transform: skewX(-8deg);
+      padding: 35px;
+      transform: skewX(-6deg);
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
       position: relative;
-      will-change: transform;
-    }
-
-    .subpage-card::before {
-      content: '+ SYS.LINK // PROTOCOL_01';
-      position: absolute;
-      top: -24px; left: 0;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: var(--menu-cyan);
-      letter-spacing: 2px;
     }
 
     .subpage-title {
-      font-size: 4.2rem;
+      font-size: 3.8rem;
       font-style: italic;
       color: #fff;
-      margin: 0 0 8px 0;
+      margin: 0 0 10px 0;
       text-transform: uppercase;
-      letter-spacing: 2px;
     }
 
     .subpage-body {
@@ -467,8 +366,7 @@
       font-size: 1.2rem;
       color: #dce3f0;
       line-height: 1.5;
-      margin-bottom: 28px;
-      letter-spacing: 0.5px;
+      margin-bottom: 30px;
     }
 
     .subpage-btn-group {
@@ -478,184 +376,154 @@
     }
 
     .p3r-action-btn, .p3r-back-btn {
-      display: inline-block;
       font-family: 'Impact', sans-serif;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-style: italic;
-      padding: 10px 30px;
-      clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
+      padding: 12px 28px;
+      clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
       cursor: pointer;
       border: none;
-      outline: none;
-      letter-spacing: 1.5px;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 4px 4px 0px #000;
+      letter-spacing: 1px;
       text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      transition: transform 0.2s ease, background 0.2s ease;
     }
 
     .p3r-action-btn { background: var(--menu-cyan); color: #000; }
-    .p3r-action-btn:hover, .p3r-action-btn:active {
-      background: #fff;
-      transform: translate3d(-3px, 0, 0) scale(1.05);
-    }
-
     .p3r-back-btn { background: var(--active-pink); color: #fff; }
-    .p3r-back-btn:hover, .p3r-back-btn:active {
-      background: var(--menu-cyan);
-      color: #000;
-      transform: translate3d(-3px, 0, 0) scale(1.05);
-    }
 
-    /* --- SLASH TRANSITION OVERLAY --- */
+    /* --- TRANSITION BLADES & OVERLAYS --- */
     .slash-transition-layer {
-      position: absolute;
-      inset: 0;
-      z-index: 15;
-      pointer-events: none;
-      overflow: hidden;
+      position: absolute; inset: 0; z-index: 15; pointer-events: none; overflow: hidden;
     }
     .slash-blade-1, .slash-blade-2 {
-      position: absolute;
-      width: 200vw;
-      height: 120px;
-      top: 40%;
-      left: -50vw;
+      position: absolute; width: 200vw; height: 100px; top: 40%; left: -50vw;
       transform: rotate(-15deg) translateY(-1000px);
-      will-change: transform;
     }
     .slash-blade-1 { background: var(--active-pink); opacity: 0.85; }
-    .slash-blade-2 { background: var(--menu-cyan); opacity: 0.9; height: 60px; top: 48%; }
+    .slash-blade-2 { background: var(--menu-cyan); opacity: 0.9; height: 50px; top: 48%; }
 
     .slash-blade-1.trigger { animation: bladeSweep 0.35s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
     .slash-blade-2.trigger { animation: bladeSweep 0.35s 0.04s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
 
     @keyframes bladeSweep {
-      0% { transform: rotate(-15deg) translateY(-800px) scaleY(1); }
-      50% { transform: rotate(-15deg) translateY(0px) scaleY(1.8); }
-      100% { transform: rotate(-15deg) translateY(800px) scaleY(0.5); }
+      0% { transform: rotate(-15deg) translateY(-800px); }
+      50% { transform: rotate(-15deg) translateY(0px); }
+      100% { transform: rotate(-15deg) translateY(800px); }
     }
 
-    /* --- OVERLAYS --- */
     .start-screen-overlay {
       position: absolute; inset: 0; z-index: 20;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      cursor: pointer; background: #000;
-      transition: opacity 0.5s ease;
+      display: flex; justify-content: center; align-items: center;
+      background: #000; cursor: pointer; transition: opacity 0.5s ease;
       padding: 20px;
     }
     .press-start-text {
-      font-size: 2.8rem; color: #fff; font-style: italic; letter-spacing: 4px;
-      animation: blink 1.2s infinite;
-      text-align: center;
+      font-size: 2.5rem; color: #fff; font-style: italic; letter-spacing: 3px;
+      animation: blink 1.2s infinite; text-align: center;
     }
     @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
     body.game-active .start-screen-overlay { opacity: 0; pointer-events: none; }
 
-    .screen-flash {
-      position: absolute; inset: 0; background: #fff; z-index: 99;
-      opacity: 0; pointer-events: none;
-    }
+    .screen-flash { position: absolute; inset: 0; background: #fff; z-index: 99; opacity: 0; pointer-events: none; }
     .flash-trigger { animation: flashAnimation 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes flashAnimation { 0% { opacity: 1; } 100% { opacity: 0; } }
 
     /* ==========================================================================
-       MOBILE RESPONSIVE BREAKPOINTS (SMARTPHONES & TABLETS)
+       MOBILE LAYOUT & BUTTON ALIGNMENT FIXES (📱)
        ========================================================================== */
     @media (max-width: 768px) {
-      /* Hide non-essential desktop hints */
       .keyboard-hints { display: none !important; }
-      .bg-ticker { font-size: 6rem; top: 25%; }
+      .bg-ticker { font-size: 5rem; top: 30%; }
 
-      /* Scale down white wedge */
-      .game-left-white-wedge { width: 55vw; opacity: 0.85; }
-      .wedge-text { font-size: 7rem; margin-bottom: 20px; }
+      .game-left-white-wedge { width: 65vw; opacity: 0.7; }
+      .wedge-text { font-size: 6rem; }
 
-      /* Adjust character positioning on smaller screens */
-      .p3r-character-art {
-        height: 80%;
-        opacity: 0.35; /* Faded slightly on mobile so text remains 100% legible */
-      }
+      .p3r-character-art { height: 75%; opacity: 0.3; }
 
-      /* HUD Positioning */
-      .p3r-hud-container {
-        top: 15px;
-        right: 15px;
-        transform: skewX(-8deg) translateY(-100px);
-      }
-      .hud-date { font-size: 1.4rem; }
-      .hud-day { font-size: 1.2rem; }
-      .hud-weather-svg { width: 18px; height: 18px; }
-      .hud-period-box { font-size: 0.85rem; padding: 2px 8px; }
+      /* Fixed HUD placement */
+      .p3r-hud-container { top: 12px; right: 12px; transform: skewX(-6deg) translateY(-100px); }
+      .hud-date { font-size: 1.3rem; }
+      .hud-day { font-size: 1.1rem; }
 
-      /* Menu barrel mobile layout */
+      /* Fixed Menu Layout - Center aligned without screen distortion */
       .p3r-game-screen {
-        padding-right: 4vw;
+        padding: 0 15px;
         justify-content: center;
         align-items: flex-end;
-        padding-bottom: 8vh;
+        padding-bottom: 6vh;
       }
 
       .menu-cascading-barrel {
-        transform: rotateY(0deg) rotateZ(-2deg) skewX(-2deg);
-        gap: 12px;
-        width: 90vw;
-        align-items: flex-start;
+        transform: none !important; /* Removes 3D pitch that broke mobile buttons */
+        gap: 8px;
+        width: 100%;
+        align-items: center;
       }
 
       .menu-item-row {
-        font-size: 2.8rem;
-        padding: 0px 20px;
-        -webkit-text-stroke: 1px rgba(255,255,255,0.6);
-        gap: 10px;
+        font-size: 2.2rem;
+        padding: 6px 15px;
+        width: 100%;
+        justify-content: center;
+        -webkit-text-stroke: 1px rgba(255,255,255,0.7);
       }
 
-      .menu-item-num { font-size: 1.5rem; }
-
       .menu-item-row.selected {
-        font-size: 3.2rem;
-        transform: translate3d(10px, 0, 0) scale(1.04);
+        font-size: 2.5rem;
+        transform: scale(1.05);
       }
 
       .menu-item-row.selected::before {
-        width: 120%;
-        left: -10%;
+        width: 100%;
+        left: 0;
+        clip-path: none;
       }
 
-      /* Subpage overlay on mobile */
+      /* Fixed Subpage Card & Action Buttons */
       .p3r-subpage {
-        padding-right: 0;
+        padding: 15px;
         align-items: center;
-        padding: 20px;
+        justify-content: center;
       }
 
       .subpage-card {
-        width: 92vw;
-        padding: 30px 25px;
-        transform: skewX(-4deg);
+        width: 100%;
+        max-width: 100%;
+        transform: none !important; /* Prevents text overflow */
+        padding: 25px 20px;
+        border-right: none;
       }
 
-      .subpage-title { font-size: 2.8rem; }
-      .subpage-body { font-size: 1.05rem; }
+      .subpage-title { font-size: 2.4rem; }
+      .subpage-body { font-size: 1rem; margin-bottom: 20px; }
+
+      .subpage-btn-group {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+      }
+
       .p3r-action-btn, .p3r-back-btn {
-        font-size: 1.2rem;
-        padding: 10px 20px;
+        width: 100%;
+        font-size: 1.3rem;
+        padding: 14px 0;
+        clip-path: none;
+        border-radius: 4px;
       }
-
-      .press-start-text { font-size: 2.2rem; }
     }
   </style>
 </head>
 <body class="intro-mode">
 
-  <audio id="menu-bgm" src="bgm.mp3" loop></audio>
-
-  <!-- Intro Screen -->
+  <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">TAP OR PRESS ANY BUTTON</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
 
-  <!-- Slash Transition Layer -->
+  <!-- Slash Animations -->
   <div class="slash-transition-layer">
     <div class="slash-blade-1" id="blade1"></div>
     <div class="slash-blade-2" id="blade2"></div>
@@ -684,7 +552,7 @@
   <!-- Background Layers -->
   <div class="p3r-bg-stripes"></div>
   <div class="halftone-overlay"></div>
-  <div class="bg-ticker">SYSTEM PROTOCOL // SOCIAL STATS // TARTARUS NAVIGATION // SYSTEM PROTOCOL // SOCIAL STATS // </div>
+  <div class="bg-ticker">SYSTEM PROTOCOL // SOCIAL STATS // TARTARUS NAVIGATION // SYSTEM PROTOCOL // </div>
   <canvas id="ambient-canvas"></canvas>
 
   <!-- Left Wedge -->
@@ -692,35 +560,32 @@
     <div class="wedge-text">NETWORK</div>
   </div>
 
-  <!-- Ambient Light Blur Aura -->
-  <div class="character-backlight-blur"></div>
-
-  <!-- 3D Menu Layer -->
+  <!-- Menu Layer -->
   <div class="p3r-game-screen">
     <div class="menu-cascading-barrel" id="menu-barrel">
-      <div class="menu-item-row selected" data-platform="Instagram" data-url="https://instagram.com" data-desc="Connecting to Instagram feed... Check out recent photos and updates." style="animation-delay: 0.0s;">
+      <div class="menu-item-row selected" data-platform="Instagram" data-url="https://instagram.com" data-desc="Connecting to Instagram feed... View posts and stories." style="animation-delay: 0.0s;">
         <span class="menu-item-num">01</span> Instagram
       </div>
-      <div class="menu-item-row" data-platform="Roblox" data-url="https://roblox.com" data-desc="Entering Roblox experiences... Join games and community events." style="animation-delay: 0.05s;">
+      <div class="menu-item-row" data-platform="Roblox" data-url="https://roblox.com" data-desc="Entering Roblox experiences... Join active games and servers." style="animation-delay: 0.05s;">
         <span class="menu-item-num">02</span> Roblox
       </div>
-      <div class="menu-item-row" data-platform="TikTok" data-url="https://tiktok.com" data-desc="Launching TikTok stream... Explore short video content." style="animation-delay: 0.10s;">
+      <div class="menu-item-row" data-platform="TikTok" data-url="https://tiktok.com" data-desc="Launching TikTok stream... Browse trending videos." style="animation-delay: 0.10s;">
         <span class="menu-item-num">03</span> TikTok
       </div>
-      <div class="menu-item-row" data-platform="YouTube" data-url="https://youtube.com" data-desc="Opening YouTube channel... Watch latest videos and live broadcasts." style="animation-delay: 0.15s;">
+      <div class="menu-item-row" data-platform="YouTube" data-url="https://youtube.com" data-desc="Opening YouTube channel... Watch streams and content." style="animation-delay: 0.15s;">
         <span class="menu-item-num">04</span> YouTube
       </div>
-      <div class="menu-item-row" data-platform="Discord" data-url="https://discord.com" data-desc="Connecting to Discord server... Chat with voice and text communities." style="animation-delay: 0.20s;">
+      <div class="menu-item-row" data-platform="Discord" data-url="https://discord.com" data-desc="Connecting to Discord server... Join text and voice channels." style="animation-delay: 0.20s;">
         <span class="menu-item-num">05</span> Discord
       </div>
     </div>
   </div>
 
-  <!-- SUB-PAGE CONTAINER -->
+  <!-- SUB-PAGE OVERLAY -->
   <div class="p3r-subpage" id="subpage">
     <div class="subpage-card">
       <h1 class="subpage-title" id="subpage-title">INSTAGRAM</h1>
-      <p class="subpage-body" id="subpage-desc">Connecting to Instagram feed... Check out recent photos and updates.</p>
+      <p class="subpage-body" id="subpage-desc">Connecting to Instagram feed... View posts and stories.</p>
       <div class="subpage-btn-group">
         <a href="#" target="_blank" class="p3r-action-btn" id="launch-btn">LAUNCH PROTOCOL &gt;</a>
         <button class="p3r-back-btn" id="back-btn">&lt; RETURN</button>
@@ -728,30 +593,28 @@
     </div>
   </div>
 
-  <!-- Integrated Character Layer -->
+  <!-- Character Artwork -->
   <div class="p3r-character-container">
     <div class="character-parallax-wrapper" id="char-wrapper">
-      <img src="character.PNG" class="p3r-character-art" id="char-art" alt="Makoto Yuki">
+      <img src="character.PNG" class="p3r-character-art" id="char-art" alt="Character">
     </div>
   </div>
 
   <script>
     const isMobile = window.innerWidth <= 768;
 
-    // --- LIVE DYNAMIC PERSONA HUD DATE SYSTEM ---
+    // --- HUD DATE CONTROLLER ---
     function updateHUDDate() {
       const now = new Date();
       const month = now.getMonth() + 1;
       const date = now.getDate();
       const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-      const dayName = days[now.getDay()];
-
+      
       document.getElementById('hud-date').textContent = `${month}/${date}`;
-      document.getElementById('hud-day').textContent = dayName;
+      document.getElementById('hud-day').textContent = days[now.getDay()];
 
       const hours = now.getHours();
       let period = 'AFTERNOON';
-
       if (hours >= 5 && hours < 12) period = 'MORNING';
       else if (hours >= 12 && hours < 17) period = 'AFTERNOON';
       else if (hours >= 17 && hours < 21) period = 'EVENING';
@@ -759,20 +622,60 @@
 
       document.getElementById('hud-period').textContent = period;
     }
-    
     updateHUDDate();
 
-    // --- PROCEDURAL WEB AUDIO SFX ENGINE ---
+    // --- WEB AUDIO API (SYNTHESIZED BGM + SFX ENGINE) ---
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
+    let bgmInterval = null;
 
     function initAudio() {
       if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
+    // Procedural Persona-Style Chill Blue BGM Loop
+    function startProceduralBGM() {
+      if (bgmInterval) return;
+
+      const chords = [
+        [220.00, 261.63, 329.63], // A minor
+        [174.61, 220.00, 261.63], // F major
+        [261.63, 329.63, 392.00], // C major
+        [196.00, 246.94, 293.66]  // G major
+      ];
+      let step = 0;
+
+      bgmInterval = setInterval(() => {
+        if (!audioCtx || !hasStarted) return;
+        
+        const now = audioCtx.currentTime;
+        const currentChord = chords[step % chords.length];
+
+        currentChord.forEach(freq => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+
+          gain.gain.setValueAtTime(0.015, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          osc.start(now);
+          osc.stop(now + 2.5);
+        });
+
+        step++;
+      }, 2500);
+    }
+
+    // Interactive Sound Effects
     function playSFX(type) {
       if (!audioCtx) return;
-      
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
       osc.connect(gain);
@@ -786,43 +689,39 @@
         osc.frequency.exponentialRampToValueAtTime(880, now + 0.05);
         gain.gain.setValueAtTime(0.08, now);
         gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
-        osc.start(now);
-        osc.stop(now + 0.05);
-      } else if (type === 'select' || type === 'slash') {
+        osc.start(now); osc.stop(now + 0.05);
+      } else if (type === 'select') {
         osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(150, now);
         osc.frequency.exponentialRampToValueAtTime(800, now + 0.15);
-        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.setValueAtTime(0.2, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-        osc.start(now);
-        osc.stop(now + 0.2);
+        osc.start(now); osc.stop(now + 0.2);
       } else if (type === 'back') {
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(600, now);
         osc.frequency.exponentialRampToValueAtTime(180, now + 0.18);
-        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.setValueAtTime(0.18, now);
         gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
-        osc.start(now);
-        osc.stop(now + 0.18);
+        osc.start(now); osc.stop(now + 0.18);
       } else if (type === 'start') {
         osc.type = 'square';
         osc.frequency.setValueAtTime(220, now);
         osc.frequency.exponentialRampToValueAtTime(660, now + 0.3);
         gain.gain.setValueAtTime(0.15, now);
         gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
-        osc.start(now);
-        osc.stop(now + 0.3);
+        osc.start(now); osc.stop(now + 0.3);
       }
     }
 
-    // --- OPTIMIZED AMBIENT SHARDS CANVAS ENGINE ---
+    // --- CANVAS PARTICLES ---
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
     let elements = [];
 
-    function resize() { 
-      canvas.width = window.innerWidth; 
-      canvas.height = window.innerHeight; 
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
     }
     window.addEventListener('resize', resize);
     resize();
@@ -830,42 +729,32 @@
     class Shard {
       constructor() { this.reset(); }
       reset() {
-        this.y = Math.random() * canvas.height; 
-        this.x = Math.random() * canvas.width; 
-        this.speedY = -(Math.random() * 2.2 + 0.9); 
+        this.y = Math.random() * canvas.height;
+        this.x = Math.random() * canvas.width;
+        this.speedY = -(Math.random() * 2 + 0.8);
         this.speedX = (Math.random() - 0.5) * 1.2;
-        this.size = Math.random() * 2.5 + 0.8;
-        this.rot = Math.random() * Math.PI * 2;
-        this.rotSpeed = (Math.random() - 0.5) * 0.05;
-        this.isBright = Math.random() > 0.6;
+        this.size = Math.random() * 2 + 0.8;
       }
       step() {
         this.y += this.speedY;
         this.x += this.speedX;
-        this.rot += this.rotSpeed;
-        if (this.y < -50) this.reset();
+        if (this.y < -30) this.reset();
       }
       draw() {
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.rotate(this.rot);
-        ctx.scale(this.size, this.size);
         ctx.beginPath();
-        ctx.moveTo(0, 0);
-        ctx.lineTo(16, 5);
-        ctx.lineTo(7, 18);
-        ctx.closePath();
-        ctx.fillStyle = this.isBright ? 'rgba(38, 230, 255, 0.55)' : 'rgba(0, 82, 224, 0.35)';
+        ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(38, 230, 255, 0.5)';
         ctx.fill();
         ctx.restore();
       }
     }
-    
-    // Scale particle count for mobile screens
-    const particleCount = isMobile ? 18 : 40;
+
+    const particleCount = isMobile ? 15 : 35;
     for(let i = 0; i < particleCount; i++) elements.push(new Shard());
 
-    // --- TOUCH & MOUSE PARALLAX ENGINE ---
+    // --- PARALLAX & ANIMATION LOOP ---
     const charWrapper = document.getElementById('char-wrapper');
     const menuBarrel = document.getElementById('menu-barrel');
     let isGameActive = false;
@@ -880,39 +769,30 @@
 
     document.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY));
     document.addEventListener('touchmove', (e) => {
-      if (e.touches.length > 0) {
-        handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
-      }
+      if (e.touches.length > 0) handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: true });
 
     function mainRenderLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       elements.forEach(e => { e.step(); e.draw(); });
 
-      if (isGameActive) {
+      if (isGameActive && !isMobile) {
         currentX += (targetX - currentX) * 0.1;
         currentY += (targetY - currentY) * 0.1;
-
-        const charOffset = isMobile ? 8 : 18;
-        charWrapper.style.transform = `translate3d(${currentX * -charOffset}px, ${currentY * -8}px, 0)`;
-        
-        if (!isMobile) {
-          menuBarrel.style.transform = `rotateY(${-20 + (currentX * 8)}deg) rotateZ(${-4 + (currentY * 2)}deg) skewX(-4deg) translate3d(0, ${currentY * 12}px, 0)`;
-        }
+        charWrapper.style.transform = `translate3d(${currentX * -18}px, ${currentY * -8}px, 0)`;
+        menuBarrel.style.transform = `rotateY(${-20 + (currentX * 8)}deg) rotateZ(${-4 + (currentY * 2)}deg) skewX(-4deg)`;
       }
 
       requestAnimationFrame(mainRenderLoop);
     }
     requestAnimationFrame(mainRenderLoop);
 
-    // --- NAVIGATION & INPUT SYSTEM ---
+    // --- INTERACTION & NAVIGATION SYSTEM ---
     const rows = Array.from(document.querySelectorAll('.menu-item-row'));
     const flash = document.getElementById('flash-overlay');
-    const bgm = document.getElementById('menu-bgm');
-    const charArt = document.getElementById('char-art');
     const blade1 = document.getElementById('blade1');
     const blade2 = document.getElementById('blade2');
-    
+
     const subpageTitle = document.getElementById('subpage-title');
     const subpageDesc = document.getElementById('subpage-desc');
     const launchBtn = document.getElementById('launch-btn');
@@ -937,15 +817,13 @@
       flash.classList.remove('flash-trigger');
       void flash.offsetWidth; 
       flash.classList.add('flash-trigger');
-
-      charArt.classList.add('recoil');
-      setTimeout(() => charArt.classList.remove('recoil'), 150);
     }
 
-    function startExperience(e) {
+    function startExperience() {
       if (hasStarted) return;
       hasStarted = true;
       initAudio();
+      startProceduralBGM();
       updateHUDDate();
 
       document.body.classList.remove('intro-mode');
@@ -953,18 +831,11 @@
 
       playSFX('start');
 
-      bgm.volume = 0.5; 
-      bgm.play().catch(err => console.log("Audio prep:", err));
-
       flash.classList.remove('flash-trigger');
       void flash.offsetWidth; 
       flash.classList.add('flash-trigger');
 
-      window.removeEventListener('keydown', startExperience);
-      window.removeEventListener('pointerdown', startExperience);
-      window.removeEventListener('touchstart', startExperience);
-      
-      setTimeout(() => isGameActive = true, 800);
+      setTimeout(() => isGameActive = true, 600);
     }
 
     window.addEventListener('keydown', startExperience);
@@ -974,35 +845,22 @@
     function selectRow(index) {
       if (index < 0 || index >= rows.length) return;
       selectedIndex = index;
-      
-      rows.forEach((r, i) => {
-        if (i === selectedIndex) {
-          r.classList.add('selected');
-        } else {
-          r.classList.remove('selected');
-        }
-      });
+      rows.forEach((r, i) => r.classList.toggle('selected', i === selectedIndex));
     }
 
     function openSubpage(row) {
       triggerTransitions('select');
-
       subpageTitle.textContent = row.dataset.platform;
       subpageDesc.textContent = row.dataset.desc;
       launchBtn.href = row.dataset.url;
 
-      setTimeout(() => {
-        document.body.classList.add('subpage-open');
-      }, 150);
+      setTimeout(() => document.body.classList.add('subpage-open'), 150);
     }
 
     function closeSubpage() {
       if (!document.body.classList.contains('subpage-open')) return;
       triggerTransitions('back');
-
-      setTimeout(() => {
-        document.body.classList.remove('subpage-open');
-      }, 150);
+      setTimeout(() => document.body.classList.remove('subpage-open'), 150);
     }
 
     rows.forEach((row, i) => {
@@ -1025,13 +883,10 @@
 
     window.addEventListener('keydown', (e) => {
       if (!hasStarted) return;
-
       const isSubpageOpen = document.body.classList.contains('subpage-open');
 
       if (isSubpageOpen) {
-        if (e.key === 'Escape' || e.key === 'Backspace') {
-          closeSubpage();
-        }
+        if (e.key === 'Escape' || e.key === 'Backspace') closeSubpage();
         return;
       }
 
