@@ -3,15 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>P3R Social Menu - Seamless Blend Cut</title>
+  <title>P3R Social Menu - Flawless Cut</title>
   <link href="https://fonts.googleapis.com/css2?family=Impact&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      /* Palette extracted from provided reference image */
-      --p3r-cobalt-dark: #002288;
-      --p3r-cobalt-base: #0040c8;
-      --p3r-cobalt-bright: #0052e0;
+      var(--p3r-cobalt-dark): #002288;
+      var(--p3r-cobalt-base): #0040c8;
+      var(--p3r-cobalt-bright): #0052e0;
       --menu-cyan: #26e6ff;
       --active-pink: #ff0055;
     }
@@ -110,30 +109,19 @@
       margin-bottom: 50px;
     }
 
-    /* --- SEAMLESS BLENDED CHARACTER CONTAINER --- */
+    /* --- CHARACTER CONTAINER (TOP LAYER) --- */
     .p3r-character-container {
       position: absolute;
       bottom: 0; left: 0;
-      height: 110vh; width: 100vw; 
-      z-index: 4;
-      pointer-events: none;
+      height: 100vh; width: 100vw; 
+      z-index: 10; /* Bumped to absolute top layer */
+      pointer-events: none; /* Menu underneath remains clickable */
       display: flex; align-items: flex-end;
       overflow: hidden;
       opacity: 0;
       transition: opacity 0.5s ease;
     }
     body.game-active .p3r-character-container { opacity: 1; }
-
-    /* Blue Ambient Overlay to blend sprite into environment light */
-    .p3r-character-container::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(0, 64, 200, 0.35) 0%, rgba(0, 15, 60, 0.5) 100%);
-      mix-blend-mode: color; /* Converts character shadows to ambient blue */
-      pointer-events: none;
-      z-index: 2;
-    }
 
     .character-parallax-wrapper {
       height: 100%; width: 100%;
@@ -149,31 +137,25 @@
       height: 105%; width: auto;
       object-fit: contain; object-position: left bottom;
       
-      /* Color grading filters to integrate colors with blue atmosphere */
+      /* Anchor image to bottom-left so scaling never reveals a gap */
+      transform-origin: left bottom;
+      
+      /* Color grading */
       filter: 
         drop-shadow(15px 10px 30px rgba(0, 15, 60, 0.8))
         contrast(1.1) 
         saturate(1.15) 
         brightness(0.92);
-      
-      /* Multi-directional smooth mask: Fades into dark blue on right and bottom */
-      -webkit-mask-image: 
-        linear-gradient(to right, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 95%),
-        linear-gradient(to top, rgba(0,0,0,1) 90%, rgba(0,0,0,0) 100%);
-      mask-image: 
-        linear-gradient(to right, rgba(0,0,0,1) 60%, rgba(0,0,0,0) 95%),
-        linear-gradient(to top, rgba(0,0,0,1) 90%, rgba(0,0,0,0) 100%);
-      -webkit-mask-composite: source-in;
-      mask-composite: intersect;
 
       animation: floatCharacterMirror 4s ease-in-out infinite alternate;
       animation-play-state: paused;
     }
     body.game-active .p3r-character-art { animation-play-state: running; }
 
+    /* Gap Fixed: Used scale() anchored to the bottom instead of translateY() */
     @keyframes floatCharacterMirror {
-      0% { transform: translateY(0%) scale(1); }
-      100% { transform: translateY(-3%) scale(1.015); }
+      0% { transform: scale(1); }
+      100% { transform: scale(1.025); }
     }
 
     /* --- 3D MENU LAYER --- */
@@ -296,14 +278,7 @@
     <div class="wedge-text">NETWORK</div>
   </div>
 
-  <!-- Blended Character Container -->
-  <div class="p3r-character-container">
-    <div class="character-parallax-wrapper" id="char-wrapper">
-      <img src="character.PNG" class="p3r-character-art" alt="Makoto Yuki">
-    </div>
-  </div>
-
-  <!-- 3D Menu Layer -->
+  <!-- 3D Menu Layer (Now properly underneath the character) -->
   <div class="p3r-game-screen">
     <div class="menu-cascading-barrel" id="menu-barrel">
       <div class="menu-item-row selected" style="animation-delay: 0.0s;">Instagram</div>
@@ -311,6 +286,13 @@
       <div class="menu-item-row" style="animation-delay: 0.10s;">TikTok</div>
       <div class="menu-item-row" style="animation-delay: 0.15s;">YouTube</div>
       <div class="menu-item-row" style="animation-delay: 0.20s;">Discord</div>
+    </div>
+  </div>
+
+  <!-- Character Container (Top Layer) -->
+  <div class="p3r-character-container">
+    <div class="character-parallax-wrapper" id="char-wrapper">
+      <img src="character.PNG" class="p3r-character-art" alt="Makoto Yuki">
     </div>
   </div>
 
