@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>P3R Social Menu - Fixed Audio & Mobile Layout</title>
+  <title>P3R Social Menu - Custom Audio</title>
   <link href="https://fonts.googleapis.com/css2?family=Impact&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
   
   <style>
@@ -430,9 +430,7 @@
     .flash-trigger { animation: flashAnimation 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes flashAnimation { 0% { opacity: 1; } 100% { opacity: 0; } }
 
-    /* ==========================================================================
-       MOBILE LAYOUT & BUTTON ALIGNMENT FIXES (📱)
-       ========================================================================== */
+    /* MOBILE LAYOUT ADJUSTMENTS */
     @media (max-width: 768px) {
       .keyboard-hints { display: none !important; }
       .bg-ticker { font-size: 5rem; top: 30%; }
@@ -442,12 +440,10 @@
 
       .p3r-character-art { height: 75%; opacity: 0.3; }
 
-      /* Fixed HUD placement */
       .p3r-hud-container { top: 12px; right: 12px; transform: skewX(-6deg) translateY(-100px); }
       .hud-date { font-size: 1.3rem; }
       .hud-day { font-size: 1.1rem; }
 
-      /* Fixed Menu Layout - Center aligned without screen distortion */
       .p3r-game-screen {
         padding: 0 15px;
         justify-content: center;
@@ -456,7 +452,7 @@
       }
 
       .menu-cascading-barrel {
-        transform: none !important; /* Removes 3D pitch that broke mobile buttons */
+        transform: none !important;
         gap: 8px;
         width: 100%;
         align-items: center;
@@ -481,7 +477,6 @@
         clip-path: none;
       }
 
-      /* Fixed Subpage Card & Action Buttons */
       .p3r-subpage {
         padding: 15px;
         align-items: center;
@@ -491,7 +486,7 @@
       .subpage-card {
         width: 100%;
         max-width: 100%;
-        transform: none !important; /* Prevents text overflow */
+        transform: none !important;
         padding: 25px 20px;
         border-right: none;
       }
@@ -516,6 +511,9 @@
   </style>
 </head>
 <body class="intro-mode">
+
+  <!-- BACKGROUND MUSIC (CHANGE src TO YOUR FILE OR URL) -->
+  <audio id="custom-bgm" src="bgm.mp3" loop preload="auto"></audio>
 
   <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
@@ -624,56 +622,24 @@
     }
     updateHUDDate();
 
-    // --- WEB AUDIO API (SYNTHESIZED BGM + SFX ENGINE) ---
+    // --- AUDIO & SFX ENGINE ---
     const AudioCtx = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
-    let bgmInterval = null;
 
     function initAudio() {
       if (!audioCtx) audioCtx = new AudioCtx();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // Procedural Persona-Style Chill Blue BGM Loop
-    function startProceduralBGM() {
-      if (bgmInterval) return;
-
-      const chords = [
-        [220.00, 261.63, 329.63], // A minor
-        [174.61, 220.00, 261.63], // F major
-        [261.63, 329.63, 392.00], // C major
-        [196.00, 246.94, 293.66]  // G major
-      ];
-      let step = 0;
-
-      bgmInterval = setInterval(() => {
-        if (!audioCtx || !hasStarted) return;
-        
-        const now = audioCtx.currentTime;
-        const currentChord = chords[step % chords.length];
-
-        currentChord.forEach(freq => {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, now);
-
-          gain.gain.setValueAtTime(0.015, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
-
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-
-          osc.start(now);
-          osc.stop(now + 2.5);
-        });
-
-        step++;
-      }, 2500);
+    function playCustomBGM() {
+      const bgm = document.getElementById('custom-bgm');
+      bgm.volume = 0.5; // Adjust default volume (0.0 to 1.0)
+      bgm.play().catch(err => {
+        console.warn("BGM autoplay prevented or file not found:", err);
+      });
     }
 
-    // Interactive Sound Effects
+    // Interactive Sound Effects (UI Clicks / Hovers)
     function playSFX(type) {
       if (!audioCtx) return;
       const osc = audioCtx.createOscillator();
@@ -787,7 +753,7 @@
     }
     requestAnimationFrame(mainRenderLoop);
 
-    // --- INTERACTION & NAVIGATION SYSTEM ---
+    // --- INTERACTION SYSTEM ---
     const rows = Array.from(document.querySelectorAll('.menu-item-row'));
     const flash = document.getElementById('flash-overlay');
     const blade1 = document.getElementById('blade1');
@@ -822,8 +788,9 @@
     function startExperience() {
       if (hasStarted) return;
       hasStarted = true;
+      
       initAudio();
-      startProceduralBGM();
+      playCustomBGM(); // Starts your MP3 on tap/click
       updateHUDDate();
 
       document.body.classList.remove('intro-mode');
