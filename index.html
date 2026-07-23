@@ -233,20 +233,14 @@
       opacity: 0.95;
       filter: drop-shadow(0px 0px 25px rgba(0, 30, 140, 0.85));
       transition: transform 0.15s ease-out;
-      animation: floatCharacter 4s ease-in-out infinite; /* Continuous vertical float */
+      animation: floatCharacter 4s ease-in-out infinite;
       will-change: transform;
     }
 
     @keyframes floatCharacter {
-      0% {
-        transform: translateY(0px);
-      }
-      50% {
-        transform: translateY(-18px); /* Adjust float height here */
-      }
-      100% {
-        transform: translateY(0px);
-      }
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-18px); }
+      100% { transform: translateY(0px); }
     }
 
     /* --- 3D MENU LAYER --- */
@@ -471,7 +465,7 @@
       .p3r-character-art { 
         height: 75%; 
         opacity: 0.3; 
-        animation: floatCharacter 3.5s ease-in-out infinite; /* Floating speed on mobile */
+        animation: floatCharacter 3.5s ease-in-out infinite;
       }
 
       .p3r-hud-container { top: 12px; right: 12px; transform: skewX(-6deg) translateY(-100px); }
@@ -558,7 +552,7 @@
   <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">TAP OR PRESS ANY BUTTON</div>
-    <div class="start-version-tag">VER 1.08</div>
+    <div class="start-version-tag">VER 1.09</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
 
