@@ -291,23 +291,23 @@
     .menu-cascading-barrel {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       pointer-events: auto;
       align-items: flex-start;
-      width: 480px;
+      width: 520px;
       transform-style: preserve-3d;
       transition: transform 0.1s ease-out;
     }
 
     .menu-item-row {
-      font-size: 3.8rem;
+      font-size: 3.4rem;
       font-weight: 900;
       font-style: italic;
       text-transform: uppercase;
       cursor: pointer;
       position: relative;
       letter-spacing: 1px;
-      padding: 6px 28px;
+      padding: 4px 24px;
       width: 100%;
       box-sizing: border-box;
       transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.08s ease-out;
@@ -318,15 +318,16 @@
       transform: skewX(-12deg);
     }
 
-    .menu-item-row[data-platform="Instagram"] { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); }
-    .menu-item-row[data-platform="Roblox"]    { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); }
-    .menu-item-row[data-platform="TikTok"]    { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); }
-    .menu-item-row[data-platform="YouTube"]   { color: #a5f3ff; text-shadow: 0 0 12px rgba(165, 243, 255, 0.4); }
-    .menu-item-row[data-platform="Discord"]   { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); }
+    .menu-item-row[data-platform="Instagram"]     { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); }
+    .menu-item-row[data-platform="Roblox"]        { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); }
+    .menu-item-row[data-platform="TikTok"]        { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); }
+    .menu-item-row[data-platform="YouTube"]       { color: #a5f3ff; text-shadow: 0 0 12px rgba(165, 243, 255, 0.4); }
+    .menu-item-row[data-platform="Discord"]       { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); }
+    .menu-item-row[data-platform="London is cute"] { color: #ff66cc; text-shadow: 0 0 12px rgba(255, 102, 204, 0.5); }
 
     .menu-item-num {
       font-weight: 900;
-      font-size: 2rem;
+      font-size: 1.8rem;
       color: inherit;
       opacity: 0.85;
       font-style: italic;
@@ -341,7 +342,7 @@
     /* SELECTED STATE */
     .menu-item-row.selected {
       color: #000000 !important;
-      font-size: 3.8rem;
+      font-size: 3.4rem;
       z-index: 10;
       text-shadow: none !important;
       opacity: 1 !important;
@@ -506,7 +507,7 @@
       .bg-ticker { font-size: 5rem; top: 30%; }
 
       .game-left-white-wedge { width: 65vw; opacity: 0.75; }
-      .wedge-text { font-size: 5rem; margin-bottom: 25px; }
+      .wedge-text { font-size: 4.2rem; margin-bottom: 25px; }
 
       .p3r-character-art { 
         height: 70%; 
@@ -522,25 +523,25 @@
         padding: 0 15px;
         justify-content: center;
         align-items: flex-end;
-        padding-bottom: 5vh;
+        padding-bottom: 4vh;
       }
 
       .menu-cascading-barrel {
-        gap: 8px;
+        gap: 6px;
         width: 100%;
         align-items: center;
       }
 
       .menu-item-row {
-        font-size: 2.1rem;
-        padding: 10px 15px;
+        font-size: 1.8rem;
+        padding: 8px 12px;
         width: 100%;
         justify-content: center;
         transform: skewX(-8deg);
       }
 
       .menu-item-row.selected {
-        font-size: 2.2rem;
+        font-size: 1.9rem;
         transform: skewX(-8deg) scale(1.03) !important;
       }
 
@@ -564,7 +565,7 @@
         border-right: none;
       }
 
-      .subpage-title { font-size: 2.2rem; }
+      .subpage-title { font-size: 2rem; }
       .subpage-body { font-size: 1rem; margin-bottom: 20px; }
 
       .subpage-btn-group {
@@ -597,7 +598,7 @@
   <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">TAP OR PRESS ANY BUTTON</div>
-    <div class="start-version-tag">2.01</div>
+    <div class="start-version-tag">2.02</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
 
@@ -640,20 +641,23 @@
   <!-- Menu Layer -->
   <div class="p3r-game-screen">
     <div class="menu-cascading-barrel" id="menu-barrel">
-      <div class="menu-item-row selected" data-platform="Instagram" data-url="https://instagram.com" data-desc="Connecting to Instagram feed... View posts and stories.">
+      <div class="menu-item-row selected" data-platform="Instagram" data-wedge="INSTAGRAM" data-url="https://instagram.com" data-desc="Connecting to Instagram feed... View posts and stories.">
         <span class="menu-item-num">01</span> Instagram
       </div>
-      <div class="menu-item-row" data-platform="Roblox" data-url="https://roblox.com" data-desc="Entering Roblox experiences... Join active games and servers.">
+      <div class="menu-item-row" data-platform="Roblox" data-wedge="ROBLOX" data-url="https://roblox.com" data-desc="Entering Roblox experiences... Join active games and servers.">
         <span class="menu-item-num">02</span> Roblox
       </div>
-      <div class="menu-item-row" data-platform="TikTok" data-url="https://tiktok.com" data-desc="Launching TikTok stream... Browse trending videos.">
+      <div class="menu-item-row" data-platform="TikTok" data-wedge="TIKTOK" data-url="https://tiktok.com" data-desc="Launching TikTok stream... Browse trending videos.">
         <span class="menu-item-num">03</span> TikTok
       </div>
-      <div class="menu-item-row" data-platform="YouTube" data-url="https://youtube.com" data-desc="Opening YouTube channel... Watch streams and content.">
+      <div class="menu-item-row" data-platform="YouTube" data-wedge="YOUTUBE" data-url="https://youtube.com" data-desc="Opening YouTube channel... Watch streams and content.">
         <span class="menu-item-num">04</span> YouTube
       </div>
-      <div class="menu-item-row" data-platform="Discord" data-url="https://discord.com" data-desc="Connecting to Discord server... Join text and voice channels.">
+      <div class="menu-item-row" data-platform="Discord" data-wedge="DISCORD" data-url="https://discord.com" data-desc="Connecting to Discord server... Join text and voice channels.">
         <span class="menu-item-num">05</span> Discord
+      </div>
+      <div class="menu-item-row" data-platform="London is cute" data-wedge="LONDON" data-url="https://visitlondon.com" data-desc="Exploring London... Red phone boxes, cozy rainy afternoons, and infinite aesthetic vibes.">
+        <span class="menu-item-num">06</span> London is cute
       </div>
     </div>
   </div>
@@ -994,7 +998,7 @@
       selectedIndex = index;
       rows.forEach((r, i) => r.classList.toggle('selected', i === selectedIndex));
       
-      wedgeText.textContent = rows[selectedIndex].dataset.platform.toUpperCase();
+      wedgeText.textContent = rows[selectedIndex].dataset.wedge || rows[selectedIndex].dataset.platform.toUpperCase();
     }
 
     function openSubpage(row) {
