@@ -32,6 +32,7 @@
       color: #fff;
       font-family: 'Impact', 'Rajdhani', sans-serif;
       height: 100vh;
+      height: 100dvh;
       width: 100vw;
       overflow: hidden;
       position: relative;
@@ -206,7 +207,9 @@
     .p3r-character-container {
       position: absolute;
       bottom: 0; left: 0;
-      height: 100vh; width: 100vw; 
+      height: 100vh;
+      height: 100dvh;
+      width: 100vw; 
       z-index: 4;
       pointer-events: none;
       display: flex; align-items: flex-end;
@@ -785,10 +788,12 @@
       flash.classList.add('flash-trigger');
     }
 
-    function startExperience() {
+    function startExperience(e) {
       if (hasStarted) return;
       hasStarted = true;
       
+      if (e && e.cancelable) e.preventDefault();
+
       initAudio();
       playCustomBGM(); // Starts your MP3 on tap/click
       updateHUDDate();
@@ -805,9 +810,10 @@
       setTimeout(() => isGameActive = true, 600);
     }
 
+    const startOverlay = document.getElementById('start-overlay');
+    startOverlay.addEventListener('click', startExperience);
+    startOverlay.addEventListener('touchend', startExperience);
     window.addEventListener('keydown', startExperience);
-    window.addEventListener('pointerdown', startExperience);
-    window.addEventListener('touchstart', startExperience);
 
     function selectRow(index) {
       if (index < 0 || index >= rows.length) return;
@@ -840,6 +846,7 @@
       });
 
       row.addEventListener('click', (e) => {
+        if (!hasStarted) return;
         e.preventDefault();
         selectRow(i);
         openSubpage(row);
