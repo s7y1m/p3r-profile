@@ -227,7 +227,7 @@
       transform-origin: left bottom;
       letter-spacing: -5px;
       margin-bottom: 50px;
-      transition: color 0.2s ease;
+      transition: color 0.2s ease, transform 0.1s ease-out;
     }
 
     /* --- CHARACTER LAYER & FLOATING ANIMATION --- */
@@ -270,7 +270,7 @@
       100% { transform: translateY(0px); }
     }
 
-    /* --- FIXED MENU LAYER (NO LEFT TEXT GLITCH) --- */
+    /* --- FIXED MENU LAYER & CURSOR REACTIVE TEXT --- */
     .p3r-game-screen {
       position: absolute;
       inset: 0;
@@ -281,6 +281,7 @@
       padding-right: 8vw;
       pointer-events: none;
       transition: opacity 0.3s ease;
+      perspective: 800px;
     }
     body.subpage-open .p3r-game-screen {
       opacity: 0;
@@ -294,9 +295,10 @@
       pointer-events: auto;
       align-items: flex-start;
       width: 480px;
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out;
     }
 
-    /* FIXED PRESET TRANSFORMS TO PREVENT HORIZONTAL GLITCHING */
     .menu-item-row {
       font-size: 3.8rem;
       font-weight: 900;
@@ -308,18 +310,19 @@
       padding: 6px 28px;
       width: 100%;
       box-sizing: border-box;
-      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, text-shadow 0.2s ease;
+      transition: color 0.2s ease, text-shadow 0.2s ease, transform 0.08s ease-out;
       display: flex;
       align-items: center;
       gap: 15px;
       will-change: transform;
+      transform: skewX(-12deg);
     }
 
-    .menu-item-row[data-platform="Instagram"] { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: skewX(-12deg); }
-    .menu-item-row[data-platform="Roblox"]    { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); transform: skewX(-12deg); }
-    .menu-item-row[data-platform="TikTok"]    { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); transform: skewX(-12deg); }
-    .menu-item-row[data-platform="YouTube"]   { color: #a5f3ff; text-shadow: 0 0 12px rgba(165, 243, 255, 0.4); transform: skewX(-12deg); }
-    .menu-item-row[data-platform="Discord"]   { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: skewX(-12deg); }
+    .menu-item-row[data-platform="Instagram"] { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); }
+    .menu-item-row[data-platform="Roblox"]    { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); }
+    .menu-item-row[data-platform="TikTok"]    { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); }
+    .menu-item-row[data-platform="YouTube"]   { color: #a5f3ff; text-shadow: 0 0 12px rgba(165, 243, 255, 0.4); }
+    .menu-item-row[data-platform="Discord"]   { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); }
 
     .menu-item-num {
       font-weight: 900;
@@ -329,20 +332,18 @@
       font-style: italic;
     }
 
-    /* Hover States (Strict horizontal alignment) */
+    /* Hover States */
     .menu-item-row:hover:not(.selected) {
       color: #fff !important;
       text-shadow: 0 0 20px #fff, 0 0 30px var(--menu-cyan) !important;
-      transform: skewX(-12deg) scale(1.04) !important;
     }
 
-    /* SELECTED STATE (Locked down) */
+    /* SELECTED STATE */
     .menu-item-row.selected {
       color: #000000 !important;
       font-size: 3.8rem;
       z-index: 10;
       text-shadow: none !important;
-      transform: skewX(-12deg) scale(1.06) !important;
       opacity: 1 !important;
     }
     .menu-item-row.selected .menu-item-num { 
@@ -479,13 +480,14 @@
       animation: blink 1.2s infinite; text-align: center;
       text-shadow: 0 0 20px var(--menu-cyan);
     }
+    /* UPDATED BOTTOM RIGHT BADGE */
     .start-version-tag {
       position: absolute;
       bottom: 20px;
       right: 25px;
       font-weight: 900;
       font-style: italic;
-      font-size: 1.1rem;
+      font-size: 1.4rem;
       color: var(--menu-cyan);
       letter-spacing: 2px;
       transform: skewX(-12deg);
@@ -528,6 +530,7 @@
         gap: 6px;
         width: 100%;
         align-items: center;
+        transform: none !important;
       }
 
       .menu-item-row {
@@ -583,7 +586,7 @@
       .start-version-tag {
         bottom: 15px;
         right: 18px;
-        font-size: 0.95rem;
+        font-size: 1.1rem;
       }
     }
   </style>
@@ -596,7 +599,8 @@
   <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">TAP OR PRESS ANY BUTTON</div>
-    <div class="start-version-tag">VER 2.0 HYPER-DRIVE</div>
+    <!-- UPDATED TAG -->
+    <div class="start-version-tag">2.01</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
 
@@ -855,11 +859,14 @@
       }
     }
 
-    // --- PARALLAX & ANIMATION LOOP ---
+    // --- PARALLAX & CURSOR REACTIVE TEXT ANIMATION LOOP ---
     const charWrapper = document.getElementById('char-wrapper');
     const charArt = document.getElementById('char-art');
     const subpageCard = document.getElementById('subpage-card');
     const wedgeText = document.getElementById('wedge-text');
+    const menuBarrel = document.getElementById('menu-barrel');
+    const menuRows = Array.from(document.querySelectorAll('.menu-item-row'));
+
     let isGameActive = false;
     let targetX = 0, targetY = 0;
     let currentX = 0, currentY = 0;
@@ -872,6 +879,7 @@
       targetX = (clientX / window.innerWidth - 0.5) * 2;
       targetY = (clientY / window.innerHeight - 0.5) * 2;
 
+      // Card tilt logic in subpage
       if (document.body.classList.contains('subpage-open')) {
         subpageCard.style.transform = `skewX(-8deg) rotateY(${targetX * 12}deg) rotateX(${-targetY * 12}deg)`;
       }
@@ -899,8 +907,21 @@
         currentX += (targetX - currentX) * 0.1;
         currentY += (targetY - currentY) * 0.1;
         
+        // Character parallax
         charWrapper.style.transform = `translate3d(${currentX * -22}px, ${currentY * -12}px, 0)`;
         charArt.style.filter = `drop-shadow(${currentX * 15}px ${currentY * 15}px 25px rgba(0, 30, 140, 0.85))`;
+
+        // 3D Cursor Text Reaction
+        if (!document.body.classList.contains('subpage-open')) {
+          menuBarrel.style.transform = `rotateY(${currentX * 10}deg) rotateX(${-currentY * 10}deg)`;
+          
+          menuRows.forEach((row, i) => {
+            const isSel = row.classList.contains('selected');
+            const scaleVal = isSel ? 1.06 : (row.matches(':hover') ? 1.04 : 1.0);
+            const extraX = currentX * 12 * (i + 1) * 0.2;
+            row.style.transform = `skewX(-12deg) translate3d(${extraX}px, 0, 0) scale(${scaleVal})`;
+          });
+        }
       }
 
       requestAnimationFrame(mainRenderLoop);
