@@ -262,11 +262,11 @@
       z-index: 6;
       padding-right: 8vw;
       pointer-events: none;
-      transition: opacity 0.4s ease, transform 0.4s ease;
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
     body.subpage-open .p3r-game-screen {
       opacity: 0;
-      transform: translate3d(80px, 0, 0);
+      pointer-events: none;
     }
 
     .menu-cascading-barrel {
@@ -285,23 +285,22 @@
       cursor: pointer;
       position: relative;
       letter-spacing: 1px;
-      padding: 4px 28px;
-      opacity: 0;
-      transition: all 0.25s cubic-bezier(0.25, 1.25, 0.5, 1.3);
+      padding: 6px 28px;
+      opacity: 1 !important;
+      transition: transform 0.2s cubic-bezier(0.25, 1.25, 0.5, 1.3), color 0.2s ease;
       display: flex;
       align-items: center;
       gap: 15px;
-      paint-order: stroke fill;
       /* Dynamic floating animation per item */
-      animation: menuElasticIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards, floatMenuItem 3.5s ease-in-out infinite;
+      animation: floatMenuItem 3.5s ease-in-out infinite;
     }
 
-    /* Custom Color Variations for Light Blue Theme */
-    .menu-item-row[data-platform="Instagram"] { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: rotate(-5deg) skewX(-12deg) translateX(20px); animation-delay: 0.0s, 0.0s; }
-    .menu-item-row[data-platform="Roblox"]    { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); transform: rotate(-2deg) skewX(-8deg) translateX(-15px); animation-delay: 0.05s, 0.6s; }
-    .menu-item-row[data-platform="TikTok"]    { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); transform: rotate(-7deg) skewX(-15deg) translateX(35px); animation-delay: 0.10s, 1.2s; }
-    .menu-item-row[data-platform="YouTube"]   { color: #a5f3ff; text-shadow: 0 0 12px rgba(165, 243, 255, 0.4); transform: rotate(-3deg) skewX(-10deg) translateX(-5px); animation-delay: 0.15s, 1.8s; }
-    .menu-item-row[data-platform="Discord"]   { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: rotate(-6deg) skewX(-14deg) translateX(25px); animation-delay: 0.20s, 2.4s; }
+    /* Custom Light Blue Variations */
+    .menu-item-row[data-platform="Instagram"] { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: rotate(-5deg) skewX(-12deg) translateX(20px); animation-delay: 0.0s; }
+    .menu-item-row[data-platform="Roblox"]    { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); transform: rotate(-2deg) skewX(-8deg) translateX(-15px); animation-delay: 0.6s; }
+    .menu-item-row[data-platform="TikTok"]    { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); transform: rotate(-7deg) skewX(-15deg) translateX(35px); animation-delay: 1.2s; }
+    .menu-item-row[data-platform="YouTube"]   { color: #a5f3ff; text-shadow: 0 0 12px rgba(165, 243, 255, 0.4); transform: rotate(-3deg) skewX(-10deg) translateX(-5px); animation-delay: 1.8s; }
+    .menu-item-row[data-platform="Discord"]   { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: rotate(-6deg) skewX(-14deg) translateX(25px); animation-delay: 2.4s; }
 
     .menu-item-num {
       font-weight: 900;
@@ -312,11 +311,11 @@
     }
 
     @keyframes floatMenuItem {
-      0%, 100% { transform: translateY(0px) rotate(-4deg) skewX(-10deg); }
-      50% { transform: translateY(-8px) rotate(-2deg) skewX(-8deg); }
+      0%, 100% { translateY: 0px; }
+      50% { translateY: -8px; }
     }
 
-    /* SELECTED STATE: Solid Black Text, White Highlight Box */
+    /* SELECTED STATE FIXED: Always visible, Solid Black Text, White Box */
     .menu-item-row.selected {
       color: #000000 !important;
       font-size: 4.3rem;
@@ -324,10 +323,11 @@
       text-shadow: none !important;
       transform: scale(1.08) rotate(-4deg) skewX(-12deg) translateX(-10px) !important;
       animation: none !important;
+      opacity: 1 !important;
     }
     .menu-item-row.selected .menu-item-num { 
       color: #000000 !important; 
-      opacity: 1; 
+      opacity: 1 !important; 
     }
 
     .menu-item-row.selected::before {
@@ -335,18 +335,16 @@
       position: absolute;
       top: 50%; left: -8%;
       width: 120%; height: 110%;
-      background: #ffffff; /* White highlight banner */
+      background: #ffffff !important; /* White highlight banner */
       clip-path: polygon(0 0, 100% 12%, 96% 100%, 4% 88%);
       z-index: -1;
       transform: translateY(-50%);
       box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      display: block !important;
+      opacity: 1 !important;
       animation: violentSlice 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    @keyframes menuElasticIn {
-      0% { opacity: 0; transform: translate3d(80px, 0, 0); }
-      100% { opacity: 1; }
-    }
     @keyframes violentSlice {
       0% { transform: translateY(-50%) scaleX(0); }
       100% { transform: translateY(-50%) scaleX(1); }
@@ -513,7 +511,7 @@
         width: 100%;
         justify-content: center;
         transform: none !important;
-        animation: menuElasticIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards !important;
+        animation: floatMenuItem 3.5s ease-in-out infinite !important;
       }
 
       .menu-item-row.selected {
@@ -574,7 +572,7 @@
   <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">TAP OR PRESS ANY BUTTON</div>
-    <div class="start-version-tag">VER 1.12</div>
+    <div class="start-version-tag">VER 1.13</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
 
