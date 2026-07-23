@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sayim's Portfolio</title>
+  <title>Sayim's Hyper-Interactive Portfolio</title>
   
   <link rel="stylesheet" href="https://use.typekit.net/xpx7qvx.css"> 
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap" rel="stylesheet">
@@ -18,8 +18,6 @@
       --active-pink: #ff0055;
       --glass-bg: rgba(2, 12, 38, 0.94);
       --font-rodin: "new-rodin-pro", "FNT NewRodin Pro", "New Rodin Pro", "New Rodin", "Impact", "Rajdhani", sans-serif;
-      --mouse-x: 0.5;
-      --mouse-y: 0.5;
     }
 
     * {
@@ -53,27 +51,6 @@
       0% { transform: scale(1.03) translate(-8px, -5px) rotate(-1deg); filter: invert(0.2); }
       50% { transform: scale(0.98) translate(5px, 4px) rotate(0.8deg); filter: invert(0); }
       100% { transform: scale(1) translate(0, 0) rotate(0deg); }
-    }
-
-    /* --- DYNAMIC CUSTOM CURSOR --- */
-    #custom-cursor {
-      position: fixed;
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--menu-cyan);
-      background: rgba(38, 230, 255, 0.2);
-      transform: translate(-50%, -50%) rotate(45deg);
-      pointer-events: none;
-      z-index: 9999;
-      transition: width 0.15s, height 0.15s, background-color 0.15s, transform 0.05s linear;
-      box-shadow: 0 0 15px var(--menu-cyan-glow);
-    }
-    body:active #custom-cursor {
-      width: 36px;
-      height: 36px;
-      background: var(--active-pink);
-      border-color: #fff;
-      transform: translate(-50%, -50%) rotate(90deg);
     }
 
     /* --- HALFTONE & SCANLINES --- */
@@ -166,7 +143,6 @@
     .hud-date { font-size: 1.8rem; font-weight: 900; color: #fff; letter-spacing: 1px; }
     .hud-day { color: var(--menu-cyan); font-weight: 900; font-size: 1.5rem; }
 
-    /* Interactive Audio Toggle Indicator */
     .hud-audio-btn {
       background: rgba(38, 230, 255, 0.15);
       border: 1px solid var(--menu-cyan);
@@ -294,7 +270,7 @@
       100% { transform: translateY(0px); }
     }
 
-    /* --- SCATTERED / FLOATING MENU LAYER --- */
+    /* --- FIXED MENU LAYER (NO LEFT TEXT GLITCH) --- */
     .p3r-game-screen {
       position: absolute;
       inset: 0;
@@ -304,8 +280,7 @@
       z-index: 6;
       padding-right: 8vw;
       pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      perspective: 1000px;
+      transition: opacity 0.3s ease;
     }
     body.subpage-open .p3r-game-screen {
       opacity: 0;
@@ -315,12 +290,13 @@
     .menu-cascading-barrel {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 12px;
       pointer-events: auto;
       align-items: flex-start;
-      transform-style: preserve-3d;
+      width: 480px;
     }
 
+    /* FIXED PRESET TRANSFORMS TO PREVENT HORIZONTAL GLITCHING */
     .menu-item-row {
       font-size: 3.8rem;
       font-weight: 900;
@@ -330,20 +306,20 @@
       position: relative;
       letter-spacing: 1px;
       padding: 6px 28px;
-      opacity: 1 !important;
-      transition: transform 0.15s cubic-bezier(0.2, 1, 0.3, 1), color 0.2s ease, text-shadow 0.2s ease;
+      width: 100%;
+      box-sizing: border-box;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), color 0.2s ease, text-shadow 0.2s ease;
       display: flex;
       align-items: center;
       gap: 15px;
-      animation: floatMenuItem 3.5s ease-in-out infinite;
-      transform-origin: center right;
+      will-change: transform;
     }
 
-    .menu-item-row[data-platform="Instagram"] { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: rotate(-5deg) skewX(-12deg) translateX(20px); animation-delay: 0.0s; }
-    .menu-item-row[data-platform="Roblox"]    { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); transform: rotate(-2deg) skewX(-8deg) translateX(-15px); animation-delay: 0.6s; }
-    .menu-item-row[data-platform="TikTok"]    { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); transform: rotate(-7deg) skewX(-15deg) translateX(35px); animation-delay: 1.2s; }
-    .menu-item-row[data-platform="YouTube"]   { color: #a5f3ff; text-shadow: 0 0 12px rgba(165, 243, 255, 0.4); transform: rotate(-3deg) skewX(-10deg) translateX(-5px); animation-delay: 1.8s; }
-    .menu-item-row[data-platform="Discord"]   { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: rotate(-6deg) skewX(-14deg) translateX(25px); animation-delay: 2.4s; }
+    .menu-item-row[data-platform="Instagram"] { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: skewX(-12deg); }
+    .menu-item-row[data-platform="Roblox"]    { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); transform: skewX(-12deg); }
+    .menu-item-row[data-platform="TikTok"]    { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); transform: skewX(-12deg); }
+    .menu-item-row[data-platform="YouTube"]   { color: #a5f3ff; text-shadow: 0 0 12px rgba(165, 243, 255, 0.4); transform: skewX(-12deg); }
+    .menu-item-row[data-platform="Discord"]   { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: skewX(-12deg); }
 
     .menu-item-num {
       font-weight: 900;
@@ -353,26 +329,20 @@
       font-style: italic;
     }
 
-    @keyframes floatMenuItem {
-      0%, 100% { translateY: 0px; }
-      50% { translateY: -8px; }
-    }
-
-    /* Dynamic Hover 3D Shift */
+    /* Hover States (Strict horizontal alignment) */
     .menu-item-row:hover:not(.selected) {
       color: #fff !important;
       text-shadow: 0 0 20px #fff, 0 0 30px var(--menu-cyan) !important;
-      transform: scale(1.05) translateZ(20px) rotate(-3deg) !important;
+      transform: skewX(-12deg) scale(1.04) !important;
     }
 
-    /* SELECTED STATE: Bright White Highlight Wedge, Dynamic Pulsing Text */
+    /* SELECTED STATE (Locked down) */
     .menu-item-row.selected {
       color: #000000 !important;
-      font-size: 4.3rem;
+      font-size: 3.8rem;
       z-index: 10;
       text-shadow: none !important;
-      transform: scale(1.08) rotate(-4deg) skewX(-12deg) translateX(-10px) !important;
-      animation: none !important;
+      transform: skewX(-12deg) scale(1.06) !important;
       opacity: 1 !important;
     }
     .menu-item-row.selected .menu-item-num { 
@@ -383,21 +353,19 @@
     .menu-item-row.selected::before {
       content: '';
       position: absolute;
-      top: 50%; left: -8%;
-      width: 120%; height: 110%;
+      top: 0; left: 0; right: 0; bottom: 0;
       background: #ffffff !important;
-      clip-path: polygon(0 0, 100% 12%, 96% 100%, 4% 88%);
+      clip-path: polygon(0 0, 100% 0, 95% 100%, 0 100%);
       z-index: -1;
-      transform: translateY(-50%);
       box-shadow: 0 10px 30px rgba(255,255,255,0.6);
       display: block !important;
       opacity: 1 !important;
-      animation: violentSlice 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: violentSlice 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     @keyframes violentSlice {
-      0% { transform: translateY(-50%) scaleX(0); }
-      100% { transform: translateY(-50%) scaleX(1); }
+      0% { transform: scaleX(0); transform-origin: left; }
+      100% { transform: scaleX(1); transform-origin: left; }
     }
 
     /* --- SUB-PAGE OVERLAY --- */
@@ -533,7 +501,6 @@
 
     /* MOBILE LAYOUT ADJUSTMENTS */
     @media (max-width: 768px) {
-      #custom-cursor { display: none; }
       .keyboard-hints { display: none !important; }
       .bg-ticker { font-size: 5rem; top: 30%; }
 
@@ -569,11 +536,10 @@
         width: 100%;
         justify-content: center;
         transform: none !important;
-        animation: floatMenuItem 3.5s ease-in-out infinite !important;
       }
 
       .menu-item-row.selected {
-        font-size: 2.5rem;
+        font-size: 2.2rem;
         transform: scale(1.05) !important;
       }
 
@@ -623,9 +589,6 @@
   </style>
 </head>
 <body class="intro-mode">
-
-  <!-- DYNAMIC CURSOR -->
-  <div id="custom-cursor"></div>
 
   <!-- BACKGROUND MUSIC -->
   <audio id="custom-bgm" src="bgm.mp3" loop preload="auto"></audio>
@@ -715,7 +678,6 @@
 
   <script>
     const isMobile = window.innerWidth <= 768;
-    const customCursor = document.getElementById('custom-cursor');
     let soundEnabled = true;
 
     // --- AUDIO & SFX SYNTHESIZER ENGINE ---
@@ -836,7 +798,6 @@
         this.alpha = Math.random() * 0.6 + 0.2;
       }
       step() {
-        // Attraction towards cursor
         let dx = mousePos.x - this.x;
         let dy = mousePos.y - this.y;
         let dist = Math.sqrt(dx * dx + dy * dy);
@@ -894,7 +855,7 @@
       }
     }
 
-    // --- PARALLAX, CURSOR, & ANIMATION LOOP ---
+    // --- PARALLAX & ANIMATION LOOP ---
     const charWrapper = document.getElementById('char-wrapper');
     const charArt = document.getElementById('char-art');
     const subpageCard = document.getElementById('subpage-card');
@@ -907,16 +868,10 @@
       mousePos.x = clientX;
       mousePos.y = clientY;
 
-      if (!isMobile) {
-        customCursor.style.left = `${clientX}px`;
-        customCursor.style.top = `${clientY}px`;
-      }
-
       if (!isGameActive) return;
       targetX = (clientX / window.innerWidth - 0.5) * 2;
       targetY = (clientY / window.innerHeight - 0.5) * 2;
 
-      // Dynamic Card Tilt on Move
       if (document.body.classList.contains('subpage-open')) {
         subpageCard.style.transform = `skewX(-8deg) rotateY(${targetX * 12}deg) rotateX(${-targetY * 12}deg)`;
       }
@@ -1016,7 +971,6 @@
       selectedIndex = index;
       rows.forEach((r, i) => r.classList.toggle('selected', i === selectedIndex));
       
-      // Dynamic Wedge Text Reactivity
       wedgeText.textContent = rows[selectedIndex].dataset.platform.toUpperCase();
     }
 
@@ -1042,7 +996,7 @@
       row.addEventListener('mouseenter', () => {
         if (!hasStarted || document.body.classList.contains('subpage-open') || isMobile) return;
         if (selectedIndex !== i) {
-          const pitch = 0.8 + (i * 0.15); // Dynamic pitch per menu row
+          const pitch = 0.8 + (i * 0.15);
           playSFX('hover', pitch);
           selectRow(i);
         }
