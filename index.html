@@ -18,7 +18,6 @@
       --menu-cyan-glow: rgba(38, 230, 255, 0.6);
       --active-pink: #ff0055;
       --glass-bg: rgba(2, 12, 38, 0.94);
-      --selected-red: #ff0033;
       --font-rodin: "new-rodin-pro", "FNT NewRodin Pro", "New Rodin Pro", "New Rodin", "Impact", "Rajdhani", sans-serif;
     }
 
@@ -253,7 +252,7 @@
       100% { transform: translateY(0px); }
     }
 
-    /* --- 3D MENU LAYER --- */
+    /* --- SCATTERED / FLOATING MENU LAYER --- */
     .p3r-game-screen {
       position: absolute;
       inset: 0;
@@ -261,7 +260,7 @@
       justify-content: flex-end;
       align-items: center;
       z-index: 6;
-      padding-right: 6vw;
+      padding-right: 8vw;
       pointer-events: none;
       transition: opacity 0.4s ease, transform 0.4s ease;
     }
@@ -271,13 +270,11 @@
     }
 
     .menu-cascading-barrel {
-      transform: rotateY(-20deg) rotateZ(-4deg) skewX(-12deg);
-      transform-style: preserve-3d;
-      perspective: 1000px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 2px;
       pointer-events: auto;
+      align-items: flex-start;
     }
 
     .menu-item-row {
@@ -287,61 +284,68 @@
       text-transform: uppercase;
       cursor: pointer;
       position: relative;
-      letter-spacing: 2px;
-      padding: 5px 35px;
+      letter-spacing: 1px;
+      padding: 4px 28px;
       opacity: 0;
-      color: #000; /* Black text */
-      -webkit-text-stroke: 2px #ffffff; /* White stroke for sharp contrast */
-      transition: all 0.2s cubic-bezier(0.25, 1.25, 0.5, 1.3);
+      transition: all 0.25s cubic-bezier(0.25, 1.25, 0.5, 1.3);
       display: flex;
       align-items: center;
       gap: 15px;
       paint-order: stroke fill;
+      /* Dynamic floating animation per item */
+      animation: menuElasticIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards, floatMenuItem 3.5s ease-in-out infinite;
     }
+
+    /* Custom Color Variations for Light Blue Theme */
+    .menu-item-row[data-platform="Instagram"] { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: rotate(-5deg) skewX(-12deg) translateX(20px); animation-delay: 0.0s, 0.0s; }
+    .menu-item-row[data-platform="Roblox"]    { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); transform: rotate(-2deg) skewX(-8deg) translateX(-15px); animation-delay: 0.05s, 0.6s; }
+    .menu-item-row[data-platform="TikTok"]    { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); transform: rotate(-7deg) skewX(-15deg) translateX(35px); animation-delay: 0.10s, 1.2s; }
+    .menu-item-row[data-platform="YouTube"]   { color: #a5f3ff; text-shadow: 0 0 12px rgba(165, 243, 255, 0.4); transform: rotate(-3deg) skewX(-10deg) translateX(-5px); animation-delay: 0.15s, 1.8s; }
+    .menu-item-row[data-platform="Discord"]   { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: rotate(-6deg) skewX(-14deg) translateX(25px); animation-delay: 0.20s, 2.4s; }
 
     .menu-item-num {
       font-weight: 900;
-      font-size: 2.2rem;
-      color: #000;
-      opacity: 0.9;
+      font-size: 2rem;
+      color: inherit;
+      opacity: 0.85;
       font-style: italic;
-      -webkit-text-stroke: 0px;
     }
 
-    body.game-active .menu-item-row {
-      animation: menuElasticIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
+    @keyframes floatMenuItem {
+      0%, 100% { transform: translateY(0px) rotate(-4deg) skewX(-10deg); }
+      50% { transform: translateY(-8px) rotate(-2deg) skewX(-8deg); }
     }
 
-    /* SELECTED STATE: Heavy Red Text, White Box */
+    /* SELECTED STATE: Solid Black Text, White Highlight Box */
     .menu-item-row.selected {
-      color: var(--selected-red) !important;
-      -webkit-text-stroke: 0px;
-      font-size: 4.2rem;
-      transform: translate3d(-18px, 0, 0) scale(1.05);
+      color: #000000 !important;
+      font-size: 4.3rem;
       z-index: 10;
-      text-shadow: 3px 3px 0px rgba(0,0,0,0.3);
+      text-shadow: none !important;
+      transform: scale(1.08) rotate(-4deg) skewX(-12deg) translateX(-10px) !important;
+      animation: none !important;
     }
     .menu-item-row.selected .menu-item-num { 
-      color: var(--selected-red); 
+      color: #000000 !important; 
       opacity: 1; 
     }
 
     .menu-item-row.selected::before {
       content: '';
       position: absolute;
-      top: 50%; left: -10%;
-      width: 125%; height: 110%;
+      top: 50%; left: -8%;
+      width: 120%; height: 110%;
       background: #ffffff; /* White highlight banner */
-      clip-path: polygon(0 0, 100% 15%, 95% 100%, 5% 85%);
+      clip-path: polygon(0 0, 100% 12%, 96% 100%, 4% 88%);
       z-index: -1;
       transform: translateY(-50%);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
       animation: violentSlice 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     @keyframes menuElasticIn {
       0% { opacity: 0; transform: translate3d(80px, 0, 0); }
-      100% { opacity: 1; transform: translate3d(0, 0, 0); }
+      100% { opacity: 1; }
     }
     @keyframes violentSlice {
       0% { transform: translateY(-50%) scaleX(0); }
@@ -498,8 +502,7 @@
       }
 
       .menu-cascading-barrel {
-        transform: none !important;
-        gap: 8px;
+        gap: 6px;
         width: 100%;
         align-items: center;
       }
@@ -509,12 +512,13 @@
         padding: 6px 15px;
         width: 100%;
         justify-content: center;
-        -webkit-text-stroke: 1.5px #ffffff;
+        transform: none !important;
+        animation: menuElasticIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards !important;
       }
 
       .menu-item-row.selected {
         font-size: 2.5rem;
-        transform: scale(1.05);
+        transform: scale(1.05) !important;
       }
 
       .menu-item-row.selected::before {
@@ -570,7 +574,7 @@
   <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">TAP OR PRESS ANY BUTTON</div>
-    <div class="start-version-tag">VER 1.11</div>
+    <div class="start-version-tag">VER 1.12</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
 
@@ -614,19 +618,19 @@
   <!-- Menu Layer -->
   <div class="p3r-game-screen">
     <div class="menu-cascading-barrel" id="menu-barrel">
-      <div class="menu-item-row selected" data-platform="Instagram" data-url="https://instagram.com" data-desc="Connecting to Instagram feed... View posts and stories." style="animation-delay: 0.0s;">
+      <div class="menu-item-row selected" data-platform="Instagram" data-url="https://instagram.com" data-desc="Connecting to Instagram feed... View posts and stories.">
         <span class="menu-item-num">01</span> Instagram
       </div>
-      <div class="menu-item-row" data-platform="Roblox" data-url="https://roblox.com" data-desc="Entering Roblox experiences... Join active games and servers." style="animation-delay: 0.05s;">
+      <div class="menu-item-row" data-platform="Roblox" data-url="https://roblox.com" data-desc="Entering Roblox experiences... Join active games and servers.">
         <span class="menu-item-num">02</span> Roblox
       </div>
-      <div class="menu-item-row" data-platform="TikTok" data-url="https://tiktok.com" data-desc="Launching TikTok stream... Browse trending videos." style="animation-delay: 0.10s;">
+      <div class="menu-item-row" data-platform="TikTok" data-url="https://tiktok.com" data-desc="Launching TikTok stream... Browse trending videos.">
         <span class="menu-item-num">03</span> TikTok
       </div>
-      <div class="menu-item-row" data-platform="YouTube" data-url="https://youtube.com" data-desc="Opening YouTube channel... Watch streams and content." style="animation-delay: 0.15s;">
+      <div class="menu-item-row" data-platform="YouTube" data-url="https://youtube.com" data-desc="Opening YouTube channel... Watch streams and content.">
         <span class="menu-item-num">04</span> YouTube
       </div>
-      <div class="menu-item-row" data-platform="Discord" data-url="https://discord.com" data-desc="Connecting to Discord server... Join text and voice channels." style="animation-delay: 0.20s;">
+      <div class="menu-item-row" data-platform="Discord" data-url="https://discord.com" data-desc="Connecting to Discord server... Join text and voice channels.">
         <span class="menu-item-num">05</span> Discord
       </div>
     </div>
@@ -798,7 +802,6 @@
         currentX += (targetX - currentX) * 0.1;
         currentY += (targetY - currentY) * 0.1;
         charWrapper.style.transform = `translate3d(${currentX * -18}px, ${currentY * -8}px, 0)`;
-        menuBarrel.style.transform = `rotateY(${-20 + (currentX * 8)}deg) rotateZ(${-4 + (currentY * 2)}deg) skewX(-12deg)`;
       }
 
       requestAnimationFrame(mainRenderLoop);
