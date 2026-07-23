@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Sayim's Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Impact&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  
+  <!-- Adobe Fonts / Webfont Fallback for New Rodin Pro + Sans Fallbacks -->
+  <link rel="stylesheet" href="https://use.typekit.net/xpx7qvx.css"> 
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -16,6 +19,7 @@
       --active-pink: #ff0055;
       --glass-bg: rgba(2, 12, 38, 0.94);
       --selected-red: #ff0033;
+      --font-rodin: "new-rodin-pro", "FNT NewRodin Pro", "New Rodin Pro", "New Rodin", "Impact", "Rajdhani", sans-serif;
     }
 
     * {
@@ -31,7 +35,9 @@
       padding: 0;
       background-color: #000; 
       color: #fff;
-      font-family: 'Impact', 'Rajdhani', sans-serif;
+      font-family: var(--font-rodin);
+      font-weight: 900;
+      font-style: italic;
       height: 100vh;
       height: 100dvh;
       width: 100vw;
@@ -91,10 +97,11 @@
       position: absolute;
       top: 18%; left: -10%;
       width: 200%;
-      font-size: 11rem;
+      font-size: 10rem;
+      font-weight: 900;
+      font-style: italic;
       color: rgba(255, 255, 255, 0.04);
       white-space: nowrap;
-      font-style: italic;
       z-index: 2;
       pointer-events: none;
       transform: rotate(-5deg);
@@ -114,12 +121,12 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      transform: skewX(-12deg) translateY(-100px);
+      transform: skewX(-15deg) translateY(-100px);
       transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       opacity: 0;
     }
     body.game-active .p3r-hud-container {
-      transform: skewX(-12deg) translateY(0);
+      transform: skewX(-15deg) translateY(0);
       opacity: 1;
     }
 
@@ -134,8 +141,8 @@
       box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.8);
     }
 
-    .hud-date { font-size: 1.8rem; color: #fff; letter-spacing: 1px; }
-    .hud-day { color: var(--menu-cyan); font-size: 1.5rem; }
+    .hud-date { font-size: 1.8rem; font-weight: 900; color: #fff; letter-spacing: 1px; }
+    .hud-day { color: var(--menu-cyan); font-weight: 900; font-size: 1.5rem; }
 
     .hud-weather-svg { width: 22px; height: 22px; fill: var(--menu-cyan); }
 
@@ -144,8 +151,8 @@
       color: #000;
       padding: 3px 12px;
       font-size: 1rem;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
+      font-weight: 900;
+      font-style: italic;
       margin-top: 4px;
       letter-spacing: 2px;
       box-shadow: 3px 3px 0px #000;
@@ -159,12 +166,12 @@
       z-index: 10;
       display: flex;
       gap: 15px;
-      transform: skewX(-10deg) translateY(50px);
+      transform: skewX(-15deg) translateY(50px);
       opacity: 0;
       transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
     body.game-active .keyboard-hints {
-      transform: skewX(-10deg) translateY(0);
+      transform: skewX(-15deg) translateY(0);
       opacity: 0.9;
     }
 
@@ -172,8 +179,8 @@
       background: rgba(0, 5, 20, 0.85);
       border: 1px solid var(--menu-cyan);
       padding: 6px 16px;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
+      font-weight: 900;
+      font-style: italic;
       font-size: 0.9rem;
       color: #fff;
       letter-spacing: 1.5px;
@@ -196,7 +203,9 @@
     }
     body.game-active .game-left-white-wedge { opacity: 1; transform: translateX(0); }
     .wedge-text {
-      font-size: 14rem;
+      font-size: 13rem;
+      font-weight: 900;
+      font-style: italic;
       color: #cbd8f0;
       transform: rotate(-90deg) translateY(20px);
       transform-origin: left bottom;
@@ -262,7 +271,7 @@
     }
 
     .menu-cascading-barrel {
-      transform: rotateY(-20deg) rotateZ(-4deg) skewX(-4deg);
+      transform: rotateY(-20deg) rotateZ(-4deg) skewX(-12deg);
       transform-style: preserve-3d;
       perspective: 1000px;
       display: flex;
@@ -272,7 +281,8 @@
     }
 
     .menu-item-row {
-      font-size: 4rem;
+      font-size: 3.8rem;
+      font-weight: 900;
       font-style: italic;
       text-transform: uppercase;
       cursor: pointer;
@@ -281,7 +291,7 @@
       padding: 5px 35px;
       opacity: 0;
       color: #000; /* Black text */
-      -webkit-text-stroke: 1.5px #ffffff; /* White stroke for visibility on blue */
+      -webkit-text-stroke: 2px #ffffff; /* White stroke for sharp contrast */
       transition: all 0.2s cubic-bezier(0.25, 1.25, 0.5, 1.3);
       display: flex;
       align-items: center;
@@ -290,12 +300,11 @@
     }
 
     .menu-item-num {
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
-      font-size: 2rem;
+      font-weight: 900;
+      font-size: 2.2rem;
       color: #000;
       opacity: 0.9;
-      font-style: normal;
+      font-style: italic;
       -webkit-text-stroke: 0px;
     }
 
@@ -303,14 +312,14 @@
       animation: menuElasticIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
     }
 
-    /* SELECTED STATE: Red Text, White Box */
+    /* SELECTED STATE: Heavy Red Text, White Box */
     .menu-item-row.selected {
       color: var(--selected-red) !important;
       -webkit-text-stroke: 0px;
-      font-size: 4.4rem;
-      transform: translate3d(-15px, 0, 0);
+      font-size: 4.2rem;
+      transform: translate3d(-18px, 0, 0) scale(1.05);
       z-index: 10;
-      text-shadow: 2px 2px 0px rgba(0,0,0,0.2);
+      text-shadow: 3px 3px 0px rgba(0,0,0,0.3);
     }
     .menu-item-row.selected .menu-item-num { 
       color: var(--selected-red); 
@@ -321,7 +330,7 @@
       content: '';
       position: absolute;
       top: 50%; left: -10%;
-      width: 125%; height: 105%;
+      width: 125%; height: 110%;
       background: #ffffff; /* White highlight banner */
       clip-path: polygon(0 0, 100% 15%, 95% 100%, 5% 85%);
       z-index: -1;
@@ -366,13 +375,14 @@
       border-left: 5px solid var(--menu-cyan);
       border-right: 4px solid var(--active-pink);
       padding: 35px;
-      transform: skewX(-6deg);
+      transform: skewX(-8deg);
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
       position: relative;
     }
 
     .subpage-title {
-      font-size: 3.8rem;
+      font-size: 3.6rem;
+      font-weight: 900;
       font-style: italic;
       color: #fff;
       margin: 0 0 10px 0;
@@ -380,9 +390,9 @@
     }
 
     .subpage-body {
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 600;
-      font-size: 1.2rem;
+      font-weight: 700;
+      font-style: italic;
+      font-size: 1.25rem;
       color: #dce3f0;
       line-height: 1.5;
       margin-bottom: 30px;
@@ -395,8 +405,8 @@
     }
 
     .p3r-action-btn, .p3r-back-btn {
-      font-family: 'Impact', sans-serif;
       font-size: 1.4rem;
+      font-weight: 900;
       font-style: italic;
       padding: 12px 28px;
       clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
@@ -439,19 +449,19 @@
       padding: 20px;
     }
     .press-start-text {
-      font-size: 2.5rem; color: #fff; font-style: italic; letter-spacing: 3px;
+      font-size: 2.5rem; color: #fff; font-weight: 900; font-style: italic; letter-spacing: 3px;
       animation: blink 1.2s infinite; text-align: center;
     }
     .start-version-tag {
       position: absolute;
       bottom: 20px;
       right: 25px;
-      font-family: 'Rajdhani', sans-serif;
-      font-weight: 700;
+      font-weight: 900;
+      font-style: italic;
       font-size: 1.1rem;
       color: var(--menu-cyan);
       letter-spacing: 2px;
-      transform: skewX(-10deg);
+      transform: skewX(-12deg);
       opacity: 0.85;
       text-shadow: 0 0 8px var(--menu-cyan-glow);
     }
@@ -476,7 +486,7 @@
         animation: floatCharacter 3.5s ease-in-out infinite;
       }
 
-      .p3r-hud-container { top: 12px; right: 12px; transform: skewX(-6deg) translateY(-100px); }
+      .p3r-hud-container { top: 12px; right: 12px; transform: skewX(-10deg) translateY(-100px); }
       .hud-date { font-size: 1.3rem; }
       .hud-day { font-size: 1.1rem; }
 
@@ -499,7 +509,7 @@
         padding: 6px 15px;
         width: 100%;
         justify-content: center;
-        -webkit-text-stroke: 1px #ffffff;
+        -webkit-text-stroke: 1.5px #ffffff;
       }
 
       .menu-item-row.selected {
@@ -560,7 +570,7 @@
   <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">TAP OR PRESS ANY BUTTON</div>
-    <div class="start-version-tag">VER 1.10</div>
+    <div class="start-version-tag">VER 1.11</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
 
@@ -788,7 +798,7 @@
         currentX += (targetX - currentX) * 0.1;
         currentY += (targetY - currentY) * 0.1;
         charWrapper.style.transform = `translate3d(${currentX * -18}px, ${currentY * -8}px, 0)`;
-        menuBarrel.style.transform = `rotateY(${-20 + (currentX * 8)}deg) rotateZ(${-4 + (currentY * 2)}deg) skewX(-4deg)`;
+        menuBarrel.style.transform = `rotateY(${-20 + (currentX * 8)}deg) rotateZ(${-4 + (currentY * 2)}deg) skewX(-12deg)`;
       }
 
       requestAnimationFrame(mainRenderLoop);
