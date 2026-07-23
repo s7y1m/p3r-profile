@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sayim's Portfolio</title>
+  <title>Sayim's Hyper-Interactive Portfolio</title>
   
-  <!-- Adobe Fonts / Webfont Fallback for New Rodin Pro + Sans Fallbacks -->
   <link rel="stylesheet" href="https://use.typekit.net/xpx7qvx.css"> 
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap" rel="stylesheet">
   
@@ -15,10 +14,12 @@
       --p3r-cobalt-base: #0038b8;
       --p3r-cobalt-bright: #0052e0;
       --menu-cyan: #26e6ff;
-      --menu-cyan-glow: rgba(38, 230, 255, 0.6);
+      --menu-cyan-glow: rgba(38, 230, 255, 0.8);
       --active-pink: #ff0055;
       --glass-bg: rgba(2, 12, 38, 0.94);
       --font-rodin: "new-rodin-pro", "FNT NewRodin Pro", "New Rodin Pro", "New Rodin", "Impact", "Rajdhani", sans-serif;
+      --mouse-x: 0.5;
+      --mouse-y: 0.5;
     }
 
     * {
@@ -44,14 +45,35 @@
       position: relative;
     }
 
-    /* Screen Shake Animation */
+    /* Screen Shake Animations */
     body.impact-active {
-      animation: cameraImpact 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      animation: cameraImpact 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
     @keyframes cameraImpact {
-      0% { transform: scale(1.02) translate(-5px, -3px) rotate(-0.5deg); }
-      50% { transform: scale(0.99) translate(3px, 2px) rotate(0.3deg); }
+      0% { transform: scale(1.03) translate(-8px, -5px) rotate(-1deg); filter: invert(0.2); }
+      50% { transform: scale(0.98) translate(5px, 4px) rotate(0.8deg); filter: invert(0); }
       100% { transform: scale(1) translate(0, 0) rotate(0deg); }
+    }
+
+    /* --- DYNAMIC CUSTOM CURSOR --- */
+    #custom-cursor {
+      position: fixed;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--menu-cyan);
+      background: rgba(38, 230, 255, 0.2);
+      transform: translate(-50%, -50%) rotate(45deg);
+      pointer-events: none;
+      z-index: 9999;
+      transition: width 0.15s, height 0.15s, background-color 0.15s, transform 0.05s linear;
+      box-shadow: 0 0 15px var(--menu-cyan-glow);
+    }
+    body:active #custom-cursor {
+      width: 36px;
+      height: 36px;
+      background: var(--active-pink);
+      border-color: #fff;
+      transform: translate(-50%, -50%) rotate(90deg);
     }
 
     /* --- HALFTONE & SCANLINES --- */
@@ -59,7 +81,7 @@
       position: absolute;
       inset: 0;
       background: repeating-linear-gradient(
-        0deg, #002080, #002080 4px, #0033ad 4px, #0033ad 8px
+        0deg, #001860, #001860 4px, #002c94 4px, #002c94 8px
       );
       z-index: 1;
       opacity: 0;
@@ -70,7 +92,7 @@
     .halftone-overlay {
       position: absolute;
       inset: 0;
-      background-image: radial-gradient(rgba(38, 230, 255, 0.12) 1.5px, transparent 1.5px);
+      background-image: radial-gradient(rgba(38, 230, 255, 0.15) 1.5px, transparent 1.5px);
       background-size: 18px 18px;
       z-index: 2;
       pointer-events: none;
@@ -91,7 +113,7 @@
     }
     body.game-active #ambient-canvas { opacity: 1; }
 
-    /* --- BACKGROUND TICKER --- */
+    /* --- DYNAMIC BACKGROUND TICKER --- */
     .bg-ticker {
       position: absolute;
       top: 18%; left: -10%;
@@ -99,19 +121,20 @@
       font-size: 10rem;
       font-weight: 900;
       font-style: italic;
-      color: rgba(255, 255, 255, 0.04);
+      color: rgba(255, 255, 255, 0.035);
       white-space: nowrap;
       z-index: 2;
       pointer-events: none;
       transform: rotate(-5deg);
-      animation: scrollTicker 35s linear infinite;
+      animation: scrollTicker 25s linear infinite;
+      transition: color 0.3s ease;
     }
     @keyframes scrollTicker {
       0% { transform: rotate(-5deg) translateX(0); }
       100% { transform: rotate(-5deg) translateX(-50%); }
     }
 
-    /* --- HUD HEADER --- */
+    /* --- HUD HEADER & MUTE CONTROLLER --- */
     .p3r-hud-container {
       position: absolute;
       top: 20px;
@@ -136,14 +159,31 @@
       padding: 6px 18px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.8);
     }
 
     .hud-date { font-size: 1.8rem; font-weight: 900; color: #fff; letter-spacing: 1px; }
     .hud-day { color: var(--menu-cyan); font-weight: 900; font-size: 1.5rem; }
 
-    .hud-weather-svg { width: 22px; height: 22px; fill: var(--menu-cyan); }
+    /* Interactive Audio Toggle Indicator */
+    .hud-audio-btn {
+      background: rgba(38, 230, 255, 0.15);
+      border: 1px solid var(--menu-cyan);
+      color: var(--menu-cyan);
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+    .hud-audio-btn:hover {
+      background: var(--menu-cyan);
+      color: #000;
+      transform: scale(1.05);
+    }
 
     .hud-period-box {
       background: var(--active-pink);
@@ -183,6 +223,7 @@
       font-size: 0.9rem;
       color: #fff;
       letter-spacing: 1.5px;
+      transition: border-color 0.2s, color 0.2s;
     }
     .key-badge span { color: var(--menu-cyan); }
 
@@ -210,6 +251,7 @@
       transform-origin: left bottom;
       letter-spacing: -5px;
       margin-bottom: 50px;
+      transition: color 0.2s ease;
     }
 
     /* --- CHARACTER LAYER & FLOATING ANIMATION --- */
@@ -241,7 +283,7 @@
       object-fit: contain; object-position: left bottom;
       opacity: 0.95;
       filter: drop-shadow(0px 0px 25px rgba(0, 30, 140, 0.85));
-      transition: transform 0.15s ease-out;
+      transition: transform 0.15s ease-out, filter 0.3s ease;
       animation: floatCharacter 4s ease-in-out infinite;
       will-change: transform;
     }
@@ -263,6 +305,7 @@
       padding-right: 8vw;
       pointer-events: none;
       transition: opacity 0.3s ease, transform 0.3s ease;
+      perspective: 1000px;
     }
     body.subpage-open .p3r-game-screen {
       opacity: 0;
@@ -275,6 +318,7 @@
       gap: 2px;
       pointer-events: auto;
       align-items: flex-start;
+      transform-style: preserve-3d;
     }
 
     .menu-item-row {
@@ -287,15 +331,14 @@
       letter-spacing: 1px;
       padding: 6px 28px;
       opacity: 1 !important;
-      transition: transform 0.2s cubic-bezier(0.25, 1.25, 0.5, 1.3), color 0.2s ease;
+      transition: transform 0.15s cubic-bezier(0.2, 1, 0.3, 1), color 0.2s ease, text-shadow 0.2s ease;
       display: flex;
       align-items: center;
       gap: 15px;
-      /* Dynamic floating animation per item */
       animation: floatMenuItem 3.5s ease-in-out infinite;
+      transform-origin: center right;
     }
 
-    /* Custom Light Blue Variations */
     .menu-item-row[data-platform="Instagram"] { color: #26e6ff; text-shadow: 0 0 12px rgba(38, 230, 255, 0.4); transform: rotate(-5deg) skewX(-12deg) translateX(20px); animation-delay: 0.0s; }
     .menu-item-row[data-platform="Roblox"]    { color: #7ceeff; text-shadow: 0 0 12px rgba(124, 238, 255, 0.4); transform: rotate(-2deg) skewX(-8deg) translateX(-15px); animation-delay: 0.6s; }
     .menu-item-row[data-platform="TikTok"]    { color: #00c8ff; text-shadow: 0 0 12px rgba(0, 200, 255, 0.4); transform: rotate(-7deg) skewX(-15deg) translateX(35px); animation-delay: 1.2s; }
@@ -315,7 +358,14 @@
       50% { translateY: -8px; }
     }
 
-    /* SELECTED STATE FIXED: Always visible, Solid Black Text, White Box */
+    /* Dynamic Hover 3D Shift */
+    .menu-item-row:hover:not(.selected) {
+      color: #fff !important;
+      text-shadow: 0 0 20px #fff, 0 0 30px var(--menu-cyan) !important;
+      transform: scale(1.05) translateZ(20px) rotate(-3deg) !important;
+    }
+
+    /* SELECTED STATE: Bright White Highlight Wedge, Dynamic Pulsing Text */
     .menu-item-row.selected {
       color: #000000 !important;
       font-size: 4.3rem;
@@ -335,11 +385,11 @@
       position: absolute;
       top: 50%; left: -8%;
       width: 120%; height: 110%;
-      background: #ffffff !important; /* White highlight banner */
+      background: #ffffff !important;
       clip-path: polygon(0 0, 100% 12%, 96% 100%, 4% 88%);
       z-index: -1;
       transform: translateY(-50%);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      box-shadow: 0 10px 30px rgba(255,255,255,0.6);
       display: block !important;
       opacity: 1 !important;
       animation: violentSlice 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -350,7 +400,7 @@
       100% { transform: translateY(-50%) scaleX(1); }
     }
 
-    /* --- SUB-PAGE overlay --- */
+    /* --- SUB-PAGE OVERLAY --- */
     .p3r-subpage {
       position: absolute;
       inset: 0;
@@ -363,6 +413,7 @@
       opacity: 0;
       pointer-events: none;
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      perspective: 1000px;
     }
     body.subpage-open .p3r-subpage {
       opacity: 1;
@@ -373,13 +424,14 @@
       width: 45vw;
       max-width: 600px;
       background: var(--glass-bg);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
       border-left: 5px solid var(--menu-cyan);
       border-right: 4px solid var(--active-pink);
       padding: 35px;
       transform: skewX(-8deg);
-      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.9), 0 0 30px var(--menu-cyan-glow);
       position: relative;
+      transition: transform 0.1s ease-out;
     }
 
     .subpage-title {
@@ -389,6 +441,7 @@
       color: #fff;
       margin: 0 0 10px 0;
       text-transform: uppercase;
+      text-shadow: 0 0 15px var(--menu-cyan);
     }
 
     .subpage-body {
@@ -418,22 +471,25 @@
       text-decoration: none;
       display: inline-block;
       text-align: center;
-      transition: transform 0.2s ease, background 0.2s ease;
+      transition: transform 0.15s ease, background 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .p3r-action-btn { background: var(--menu-cyan); color: #000; }
-    .p3r-back-btn { background: var(--active-pink); color: #fff; }
+    .p3r-action-btn { background: var(--menu-cyan); color: #000; box-shadow: 0 0 15px var(--menu-cyan-glow); }
+    .p3r-action-btn:hover { transform: scale(1.08) skewX(-5deg); background: #fff; }
+
+    .p3r-back-btn { background: var(--active-pink); color: #fff; box-shadow: 0 0 15px rgba(255, 0, 85, 0.5); }
+    .p3r-back-btn:hover { transform: scale(1.08) skewX(-5deg); background: #ff3377; }
 
     /* --- TRANSITION BLADES & OVERLAYS --- */
     .slash-transition-layer {
       position: absolute; inset: 0; z-index: 15; pointer-events: none; overflow: hidden;
     }
     .slash-blade-1, .slash-blade-2 {
-      position: absolute; width: 200vw; height: 100px; top: 40%; left: -50vw;
+      position: absolute; width: 200vw; height: 120px; top: 40%; left: -50vw;
       transform: rotate(-15deg) translateY(-1000px);
     }
     .slash-blade-1 { background: var(--active-pink); opacity: 0.85; }
-    .slash-blade-2 { background: var(--menu-cyan); opacity: 0.9; height: 50px; top: 48%; }
+    .slash-blade-2 { background: var(--menu-cyan); opacity: 0.9; height: 60px; top: 48%; }
 
     .slash-blade-1.trigger { animation: bladeSweep 0.35s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
     .slash-blade-2.trigger { animation: bladeSweep 0.35s 0.04s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
@@ -453,6 +509,7 @@
     .press-start-text {
       font-size: 2.5rem; color: #fff; font-weight: 900; font-style: italic; letter-spacing: 3px;
       animation: blink 1.2s infinite; text-align: center;
+      text-shadow: 0 0 20px var(--menu-cyan);
     }
     .start-version-tag {
       position: absolute;
@@ -472,10 +529,11 @@
 
     .screen-flash { position: absolute; inset: 0; background: #fff; z-index: 99; opacity: 0; pointer-events: none; }
     .flash-trigger { animation: flashAnimation 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    @keyframes flashAnimation { 0% { opacity: 1; } 100% { opacity: 0; } }
+    @keyframes flashAnimation { 0% { opacity: 1; filter: invert(1); } 100% { opacity: 0; filter: invert(0); } }
 
     /* MOBILE LAYOUT ADJUSTMENTS */
     @media (max-width: 768px) {
+      #custom-cursor { display: none; }
       .keyboard-hints { display: none !important; }
       .bg-ticker { font-size: 5rem; top: 30%; }
 
@@ -566,13 +624,16 @@
 </head>
 <body class="intro-mode">
 
+  <!-- DYNAMIC CURSOR -->
+  <div id="custom-cursor"></div>
+
   <!-- BACKGROUND MUSIC -->
   <audio id="custom-bgm" src="bgm.mp3" loop preload="auto"></audio>
 
   <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">TAP OR PRESS ANY BUTTON</div>
-    <div class="start-version-tag">VER 1.13</div>
+    <div class="start-version-tag">VER 2.0 HYPER-DRIVE</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
 
@@ -585,10 +646,9 @@
   <!-- Persona Dynamic HUD Header -->
   <div class="p3r-hud-container">
     <div class="hud-main-box">
-      <svg class="hud-weather-svg" viewBox="0 0 24 24">
-        <circle cx="12" cy="12" r="5"/>
-        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-      </svg>
+      <div class="hud-audio-btn" id="audio-toggle">
+        <span id="audio-status">🔊 SFX ON</span>
+      </div>
       <span class="hud-date" id="hud-date">--/--</span>
       <span class="hud-day" id="hud-day">---</span>
     </div>
@@ -605,12 +665,12 @@
   <!-- Background Layers -->
   <div class="p3r-bg-stripes"></div>
   <div class="halftone-overlay"></div>
-  <div class="bg-ticker">SYSTEM PROTOCOL // SOCIAL STATS // TARTARUS NAVIGATION // SYSTEM PROTOCOL // </div>
+  <div class="bg-ticker" id="ticker-text">SYSTEM PROTOCOL // SOCIAL STATS // TARTARUS NAVIGATION // SYSTEM PROTOCOL // </div>
   <canvas id="ambient-canvas"></canvas>
 
   <!-- Left Wedge -->
   <div class="game-left-white-wedge">
-    <div class="wedge-text">NETWORK</div>
+    <div class="wedge-text" id="wedge-text">NETWORK</div>
   </div>
 
   <!-- Menu Layer -->
@@ -636,7 +696,7 @@
 
   <!-- SUB-PAGE OVERLAY -->
   <div class="p3r-subpage" id="subpage">
-    <div class="subpage-card">
+    <div class="subpage-card" id="subpage-card">
       <h1 class="subpage-title" id="subpage-title">INSTAGRAM</h1>
       <p class="subpage-body" id="subpage-desc">Connecting to Instagram feed... View posts and stories.</p>
       <div class="subpage-btn-group">
@@ -655,6 +715,63 @@
 
   <script>
     const isMobile = window.innerWidth <= 768;
+    const customCursor = document.getElementById('custom-cursor');
+    let soundEnabled = true;
+
+    // --- AUDIO & SFX SYNTHESIZER ENGINE ---
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playCustomBGM() {
+      const bgm = document.getElementById('custom-bgm');
+      bgm.volume = 0.4;
+      bgm.play().catch(() => {});
+    }
+
+    function playSFX(type, pitchModifier = 1) {
+      if (!audioCtx || !soundEnabled) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      const now = audioCtx.currentTime;
+
+      if (type === 'hover') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(440 * pitchModifier, now);
+        osc.frequency.exponentialRampToValueAtTime(880 * pitchModifier, now + 0.05);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
+        osc.start(now); osc.stop(now + 0.05);
+      } else if (type === 'select') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.exponentialRampToValueAtTime(900, now + 0.15);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+        osc.start(now); osc.stop(now + 0.2);
+      } else if (type === 'back') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(700, now);
+        osc.frequency.exponentialRampToValueAtTime(180, now + 0.18);
+        gain.gain.setValueAtTime(0.18, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+        osc.start(now); osc.stop(now + 0.18);
+      } else if (type === 'start') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(220, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.35);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.35);
+        osc.start(now); osc.stop(now + 0.35);
+      }
+    }
 
     // --- HUD DATE CONTROLLER ---
     function updateHUDDate() {
@@ -677,67 +794,28 @@
     }
     updateHUDDate();
 
-    // --- AUDIO & SFX ENGINE ---
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
-    let audioCtx = null;
-
-    function initAudio() {
-      if (!audioCtx) audioCtx = new AudioCtx();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-    }
-
-    function playCustomBGM() {
+    // Toggle Audio Button
+    const audioBtn = document.getElementById('audio-toggle');
+    const audioStatus = document.getElementById('audio-status');
+    audioBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      soundEnabled = !soundEnabled;
       const bgm = document.getElementById('custom-bgm');
-      bgm.volume = 0.5;
-      bgm.play().catch(err => {
-        console.warn("BGM autoplay prevented or file not found:", err);
-      });
-    }
-
-    function playSFX(type) {
-      if (!audioCtx) return;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-
-      const now = audioCtx.currentTime;
-
-      if (type === 'hover') {
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(440, now);
-        osc.frequency.exponentialRampToValueAtTime(880, now + 0.05);
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.linearRampToValueAtTime(0.01, now + 0.05);
-        osc.start(now); osc.stop(now + 0.05);
-      } else if (type === 'select') {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(150, now);
-        osc.frequency.exponentialRampToValueAtTime(800, now + 0.15);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-        osc.start(now); osc.stop(now + 0.2);
-      } else if (type === 'back') {
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(600, now);
-        osc.frequency.exponentialRampToValueAtTime(180, now + 0.18);
-        gain.gain.setValueAtTime(0.18, now);
-        gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
-        osc.start(now); osc.stop(now + 0.18);
-      } else if (type === 'start') {
-        osc.type = 'square';
-        osc.frequency.setValueAtTime(220, now);
-        osc.frequency.exponentialRampToValueAtTime(660, now + 0.3);
-        gain.gain.setValueAtTime(0.15, now);
-        gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
-        osc.start(now); osc.stop(now + 0.3);
+      if (soundEnabled) {
+        audioStatus.textContent = '🔊 SFX ON';
+        bgm.play().catch(() => {});
+      } else {
+        audioStatus.textContent = '🔇 MUTED';
+        bgm.pause();
       }
-    }
+    });
 
-    // --- CANVAS PARTICLES ---
+    // --- CANVAS PARTICLES WITH MOUSE MAGNETISM & SLASH BURSTS ---
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
-    let elements = [];
+    let particles = [];
+    let bursts = [];
+    let mousePos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
 
     function resize() {
       canvas.width = window.innerWidth;
@@ -753,9 +831,20 @@
         this.x = Math.random() * canvas.width;
         this.speedY = -(Math.random() * 2 + 0.8);
         this.speedX = (Math.random() - 0.5) * 1.2;
-        this.size = Math.random() * 2 + 0.8;
+        this.size = Math.random() * 2.5 + 0.8;
+        this.color = Math.random() > 0.3 ? 'rgba(38, 230, 255, ' : 'rgba(255, 0, 85, ';
+        this.alpha = Math.random() * 0.6 + 0.2;
       }
       step() {
+        // Attraction towards cursor
+        let dx = mousePos.x - this.x;
+        let dy = mousePos.y - this.y;
+        let dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 180) {
+          this.x += (dx / dist) * 1.5;
+          this.y += (dy / dist) * 1.5;
+        }
+
         this.y += this.speedY;
         this.x += this.speedX;
         if (this.y < -30) this.reset();
@@ -765,26 +854,72 @@
         ctx.translate(this.x, this.y);
         ctx.beginPath();
         ctx.arc(0, 0, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(38, 230, 255, 0.5)';
+        ctx.fillStyle = this.color + this.alpha + ')';
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = 'rgba(38, 230, 255, 0.8)';
         ctx.fill();
         ctx.restore();
       }
     }
 
-    const particleCount = isMobile ? 15 : 35;
-    for(let i = 0; i < particleCount; i++) elements.push(new Shard());
+    class ClickBurst {
+      constructor(x, y) {
+        this.x = x; this.y = y;
+        this.length = Math.random() * 40 + 20;
+        this.angle = Math.random() * Math.PI * 2;
+        this.speed = Math.random() * 12 + 6;
+        this.life = 1;
+      }
+      step() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        this.life -= 0.05;
+      }
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle);
+        ctx.fillStyle = `rgba(255, 255, 255, ${this.life})`;
+        ctx.fillRect(0, 0, this.length, 3);
+        ctx.restore();
+      }
+    }
 
-    // --- PARALLAX & ANIMATION LOOP ---
+    const particleCount = isMobile ? 18 : 45;
+    for(let i = 0; i < particleCount; i++) particles.push(new Shard());
+
+    function spawnBurst(x, y) {
+      for(let i = 0; i < 12; i++) {
+        bursts.push(new ClickBurst(x, y));
+      }
+    }
+
+    // --- PARALLAX, CURSOR, & ANIMATION LOOP ---
     const charWrapper = document.getElementById('char-wrapper');
-    const menuBarrel = document.getElementById('menu-barrel');
+    const charArt = document.getElementById('char-art');
+    const subpageCard = document.getElementById('subpage-card');
+    const wedgeText = document.getElementById('wedge-text');
     let isGameActive = false;
     let targetX = 0, targetY = 0;
     let currentX = 0, currentY = 0;
 
     function handlePointerMove(clientX, clientY) {
+      mousePos.x = clientX;
+      mousePos.y = clientY;
+
+      if (!isMobile) {
+        customCursor.style.left = `${clientX}px`;
+        customCursor.style.top = `${clientY}px`;
+      }
+
       if (!isGameActive) return;
       targetX = (clientX / window.innerWidth - 0.5) * 2;
       targetY = (clientY / window.innerHeight - 0.5) * 2;
+
+      // Dynamic Card Tilt on Move
+      if (document.body.classList.contains('subpage-open')) {
+        subpageCard.style.transform = `skewX(-8deg) rotateY(${targetX * 12}deg) rotateX(${-targetY * 12}deg)`;
+      }
     }
 
     document.addEventListener('mousemove', (e) => handlePointerMove(e.clientX, e.clientY));
@@ -792,14 +927,25 @@
       if (e.touches.length > 0) handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: true });
 
+    document.addEventListener('click', (e) => {
+      spawnBurst(e.clientX, e.clientY);
+    });
+
     function mainRenderLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      elements.forEach(e => { e.step(); e.draw(); });
+      particles.forEach(e => { e.step(); e.draw(); });
+      bursts.forEach((b, index) => {
+        b.step();
+        b.draw();
+        if (b.life <= 0) bursts.splice(index, 1);
+      });
 
       if (isGameActive && !isMobile) {
         currentX += (targetX - currentX) * 0.1;
         currentY += (targetY - currentY) * 0.1;
-        charWrapper.style.transform = `translate3d(${currentX * -18}px, ${currentY * -8}px, 0)`;
+        
+        charWrapper.style.transform = `translate3d(${currentX * -22}px, ${currentY * -12}px, 0)`;
+        charArt.style.filter = `drop-shadow(${currentX * 15}px ${currentY * 15}px 25px rgba(0, 30, 140, 0.85))`;
       }
 
       requestAnimationFrame(mainRenderLoop);
@@ -869,6 +1015,9 @@
       if (index < 0 || index >= rows.length) return;
       selectedIndex = index;
       rows.forEach((r, i) => r.classList.toggle('selected', i === selectedIndex));
+      
+      // Dynamic Wedge Text Reactivity
+      wedgeText.textContent = rows[selectedIndex].dataset.platform.toUpperCase();
     }
 
     function openSubpage(row) {
@@ -883,14 +1032,18 @@
     function closeSubpage() {
       if (!document.body.classList.contains('subpage-open')) return;
       triggerTransitions('back');
-      setTimeout(() => document.body.classList.remove('subpage-open'), 150);
+      setTimeout(() => {
+        document.body.classList.remove('subpage-open');
+        subpageCard.style.transform = `skewX(-8deg)`;
+      }, 150);
     }
 
     rows.forEach((row, i) => {
       row.addEventListener('mouseenter', () => {
         if (!hasStarted || document.body.classList.contains('subpage-open') || isMobile) return;
         if (selectedIndex !== i) {
-          playSFX('hover');
+          const pitch = 0.8 + (i * 0.15); // Dynamic pitch per menu row
+          playSFX('hover', pitch);
           selectRow(i);
         }
       });
@@ -916,11 +1069,11 @@
 
       if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') {
         const nextIndex = selectedIndex > 0 ? selectedIndex - 1 : rows.length - 1;
-        playSFX('hover');
+        playSFX('hover', 0.8 + (nextIndex * 0.15));
         selectRow(nextIndex);
       } else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') {
         const nextIndex = selectedIndex < rows.length - 1 ? selectedIndex + 1 : 0;
-        playSFX('hover');
+        playSFX('hover', 0.8 + (nextIndex * 0.15));
         selectRow(nextIndex);
       } else if (e.key === 'Enter' || e.key === ' ') {
         openSubpage(rows[selectedIndex]);
