@@ -480,7 +480,6 @@
       animation: blink 1.2s infinite; text-align: center;
       text-shadow: 0 0 20px var(--menu-cyan);
     }
-    /* UPDATED BOTTOM RIGHT BADGE */
     .start-version-tag {
       position: absolute;
       bottom: 20px;
@@ -501,49 +500,48 @@
     .flash-trigger { animation: flashAnimation 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     @keyframes flashAnimation { 0% { opacity: 1; filter: invert(1); } 100% { opacity: 0; filter: invert(0); } }
 
-    /* MOBILE LAYOUT ADJUSTMENTS */
+    /* MOBILE LAYOUT & TOUCH OPTIMIZATIONS */
     @media (max-width: 768px) {
       .keyboard-hints { display: none !important; }
       .bg-ticker { font-size: 5rem; top: 30%; }
 
-      .game-left-white-wedge { width: 65vw; opacity: 0.7; }
-      .wedge-text { font-size: 6rem; }
+      .game-left-white-wedge { width: 65vw; opacity: 0.75; }
+      .wedge-text { font-size: 5rem; margin-bottom: 25px; }
 
       .p3r-character-art { 
-        height: 75%; 
-        opacity: 0.3; 
+        height: 70%; 
+        opacity: 0.35; 
         animation: floatCharacter 3.5s ease-in-out infinite;
       }
 
       .p3r-hud-container { top: 12px; right: 12px; transform: skewX(-10deg) translateY(-100px); }
-      .hud-date { font-size: 1.3rem; }
-      .hud-day { font-size: 1.1rem; }
+      .hud-date { font-size: 1.2rem; }
+      .hud-day { font-size: 1rem; }
 
       .p3r-game-screen {
         padding: 0 15px;
         justify-content: center;
         align-items: flex-end;
-        padding-bottom: 6vh;
+        padding-bottom: 5vh;
       }
 
       .menu-cascading-barrel {
-        gap: 6px;
+        gap: 8px;
         width: 100%;
         align-items: center;
-        transform: none !important;
       }
 
       .menu-item-row {
-        font-size: 2.2rem;
-        padding: 6px 15px;
+        font-size: 2.1rem;
+        padding: 10px 15px;
         width: 100%;
         justify-content: center;
-        transform: none !important;
+        transform: skewX(-8deg);
       }
 
       .menu-item-row.selected {
         font-size: 2.2rem;
-        transform: scale(1.05) !important;
+        transform: skewX(-8deg) scale(1.03) !important;
       }
 
       .menu-item-row.selected::before {
@@ -566,7 +564,7 @@
         border-right: none;
       }
 
-      .subpage-title { font-size: 2.4rem; }
+      .subpage-title { font-size: 2.2rem; }
       .subpage-body { font-size: 1rem; margin-bottom: 20px; }
 
       .subpage-btn-group {
@@ -577,7 +575,7 @@
 
       .p3r-action-btn, .p3r-back-btn {
         width: 100%;
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         padding: 14px 0;
         clip-path: none;
         border-radius: 4px;
@@ -599,7 +597,6 @@
   <!-- Intro Screen Overlay -->
   <div class="start-screen-overlay" id="start-overlay">
     <div class="press-start-text">TAP OR PRESS ANY BUTTON</div>
-    <!-- UPDATED TAG -->
     <div class="start-version-tag">2.01</div>
   </div>
   <div class="screen-flash" id="flash-overlay"></div>
@@ -776,7 +773,7 @@
       }
     });
 
-    // --- CANVAS PARTICLES WITH MOUSE MAGNETISM & SLASH BURSTS ---
+    // --- CANVAS PARTICLES WITH MOUSE/TOUCH MAGNETISM ---
     const canvas = document.getElementById('ambient-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -850,7 +847,7 @@
       }
     }
 
-    const particleCount = isMobile ? 18 : 45;
+    const particleCount = isMobile ? 22 : 45;
     for(let i = 0; i < particleCount; i++) particles.push(new Shard());
 
     function spawnBurst(x, y) {
@@ -859,7 +856,7 @@
       }
     }
 
-    // --- PARALLAX & CURSOR REACTIVE TEXT ANIMATION LOOP ---
+    // --- PARALLAX & CURSOR/TOUCH REACTIVE TEXT ANIMATION LOOP ---
     const charWrapper = document.getElementById('char-wrapper');
     const charArt = document.getElementById('char-art');
     const subpageCard = document.getElementById('subpage-card');
@@ -890,6 +887,10 @@
       if (e.touches.length > 0) handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
     }, { passive: true });
 
+    document.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 0) handlePointerMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: true });
+
     document.addEventListener('click', (e) => {
       spawnBurst(e.clientX, e.clientY);
     });
@@ -903,23 +904,24 @@
         if (b.life <= 0) bursts.splice(index, 1);
       });
 
-      if (isGameActive && !isMobile) {
+      if (isGameActive) {
         currentX += (targetX - currentX) * 0.1;
         currentY += (targetY - currentY) * 0.1;
         
         // Character parallax
-        charWrapper.style.transform = `translate3d(${currentX * -22}px, ${currentY * -12}px, 0)`;
-        charArt.style.filter = `drop-shadow(${currentX * 15}px ${currentY * 15}px 25px rgba(0, 30, 140, 0.85))`;
+        charWrapper.style.transform = `translate3d(${currentX * -18}px, ${currentY * -10}px, 0)`;
+        charArt.style.filter = `drop-shadow(${currentX * 12}px ${currentY * 12}px 25px rgba(0, 30, 140, 0.85))`;
 
-        // 3D Cursor Text Reaction
+        // Interactive Cursor/Touch Text Reaction
         if (!document.body.classList.contains('subpage-open')) {
-          menuBarrel.style.transform = `rotateY(${currentX * 10}deg) rotateX(${-currentY * 10}deg)`;
+          menuBarrel.style.transform = `rotateY(${currentX * 8}deg) rotateX(${-currentY * 8}deg)`;
           
           menuRows.forEach((row, i) => {
             const isSel = row.classList.contains('selected');
-            const scaleVal = isSel ? 1.06 : (row.matches(':hover') ? 1.04 : 1.0);
-            const extraX = currentX * 12 * (i + 1) * 0.2;
-            row.style.transform = `skewX(-12deg) translate3d(${extraX}px, 0, 0) scale(${scaleVal})`;
+            const scaleVal = isSel ? (isMobile ? 1.03 : 1.06) : (row.matches(':hover') ? 1.04 : 1.0);
+            const extraX = currentX * 10 * (i + 1) * 0.2;
+            const skewAngle = isMobile ? -8 : -12;
+            row.style.transform = `skewX(${skewAngle}deg) translate3d(${extraX}px, 0, 0) scale(${scaleVal})`;
           });
         }
       }
@@ -1023,16 +1025,63 @@
         }
       });
 
-      row.addEventListener('click', (e) => {
+      // Mobile Touch & Click Selection
+      const handleSelection = (e) => {
         if (!hasStarted) return;
         e.preventDefault();
-        selectRow(i);
+        
+        if (selectedIndex !== i) {
+          playSFX('hover', 0.8 + (i * 0.15));
+          selectRow(i);
+        }
         openSubpage(row);
-      });
+      };
+
+      row.addEventListener('click', handleSelection);
     });
 
     backBtn.addEventListener('click', closeSubpage);
 
+    // SWIPE GESTURES FOR MOBILE
+    let touchStartY = 0;
+    let touchStartX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      if (e.touches.length > 0) {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+      }
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      if (!hasStarted || e.changedTouches.length === 0) return;
+      const deltaY = e.changedTouches[0].clientY - touchStartY;
+      const deltaX = e.changedTouches[0].clientX - touchStartX;
+
+      const isSubpageOpen = document.body.classList.contains('subpage-open');
+
+      if (isSubpageOpen) {
+        if (deltaX > 80) closeSubpage(); // Swipe right to close
+        return;
+      }
+
+      // Vertical swipe to change menu item
+      if (Math.abs(deltaY) > 40 && Math.abs(deltaY) > Math.abs(deltaX)) {
+        if (deltaY < 0) {
+          // Swipe Up
+          const nextIndex = selectedIndex < rows.length - 1 ? selectedIndex + 1 : 0;
+          playSFX('hover', 0.8 + (nextIndex * 0.15));
+          selectRow(nextIndex);
+        } else {
+          // Swipe Down
+          const nextIndex = selectedIndex > 0 ? selectedIndex - 1 : rows.length - 1;
+          playSFX('hover', 0.8 + (nextIndex * 0.15));
+          selectRow(nextIndex);
+        }
+      }
+    }, { passive: true });
+
+    // KEYBOARD NAVIGATION
     window.addEventListener('keydown', (e) => {
       if (!hasStarted) return;
       const isSubpageOpen = document.body.classList.contains('subpage-open');
