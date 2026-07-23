@@ -203,7 +203,7 @@
       margin-bottom: 50px;
     }
 
-    /* --- CHARACTER LAYER --- */
+    /* --- CHARACTER LAYER & FLOATING ANIMATION --- */
     .p3r-character-container {
       position: absolute;
       bottom: 0; left: 0;
@@ -233,6 +233,20 @@
       opacity: 0.95;
       filter: drop-shadow(0px 0px 25px rgba(0, 30, 140, 0.85));
       transition: transform 0.15s ease-out;
+      animation: floatCharacter 4s ease-in-out infinite; /* Continuous vertical float */
+      will-change: transform;
+    }
+
+    @keyframes floatCharacter {
+      0% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-18px); /* Adjust float height here */
+      }
+      100% {
+        transform: translateY(0px);
+      }
     }
 
     /* --- 3D MENU LAYER --- */
@@ -454,7 +468,11 @@
       .game-left-white-wedge { width: 65vw; opacity: 0.7; }
       .wedge-text { font-size: 6rem; }
 
-      .p3r-character-art { height: 75%; opacity: 0.3; }
+      .p3r-character-art { 
+        height: 75%; 
+        opacity: 0.3; 
+        animation: floatCharacter 3.5s ease-in-out infinite; /* Floating speed on mobile */
+      }
 
       .p3r-hud-container { top: 12px; right: 12px; transform: skewX(-6deg) translateY(-100px); }
       .hud-date { font-size: 1.3rem; }
@@ -534,7 +552,7 @@
 </head>
 <body class="intro-mode">
 
-  <!-- BACKGROUND MUSIC (CHANGE src TO YOUR FILE OR URL) -->
+  <!-- BACKGROUND MUSIC -->
   <audio id="custom-bgm" src="bgm.mp3" loop preload="auto"></audio>
 
   <!-- Intro Screen Overlay -->
@@ -614,7 +632,7 @@
     </div>
   </div>
 
-  <!-- Character Artwork -->
+  <!-- Character Artwork Layer -->
   <div class="p3r-character-container">
     <div class="character-parallax-wrapper" id="char-wrapper">
       <img src="character.PNG" class="p3r-character-art" id="char-art" alt="Character">
@@ -656,13 +674,12 @@
 
     function playCustomBGM() {
       const bgm = document.getElementById('custom-bgm');
-      bgm.volume = 0.5; // Adjust default volume (0.0 to 1.0)
+      bgm.volume = 0.5;
       bgm.play().catch(err => {
         console.warn("BGM autoplay prevented or file not found:", err);
       });
     }
 
-    // Interactive Sound Effects (UI Clicks / Hovers)
     function playSFX(type) {
       if (!audioCtx) return;
       const osc = audioCtx.createOscillator();
@@ -815,7 +832,7 @@
       if (e && e.cancelable) e.preventDefault();
 
       initAudio();
-      playCustomBGM(); // Starts your MP3 on tap/click
+      playCustomBGM();
       updateHUDDate();
 
       document.body.classList.remove('intro-mode');
