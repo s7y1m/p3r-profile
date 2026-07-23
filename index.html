@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Sayim's Hyper-Interactive Portfolio</title>
+  <title>Sayim's Portfolio</title>
   
   <link rel="stylesheet" href="https://use.typekit.net/xpx7qvx.css"> 
   <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@700&display=swap" rel="stylesheet">
@@ -420,7 +420,30 @@
       font-size: 1.25rem;
       color: #dce3f0;
       line-height: 1.5;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
+    }
+
+    /* SUBPAGE IMAGE PREVIEW STYLING */
+    .subpage-img-frame {
+      display: none;
+      margin-bottom: 25px;
+      width: 100%;
+      overflow: hidden;
+      border: 2px solid var(--menu-cyan);
+      box-shadow: 0 0 15px rgba(38, 230, 255, 0.4);
+      background: #000;
+      transform: skewX(-2deg);
+    }
+
+    .subpage-img-frame img {
+      width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .subpage-img-frame img:hover {
+      transform: scale(1.03);
     }
 
     .subpage-btn-group {
@@ -566,7 +589,7 @@
       }
 
       .subpage-title { font-size: 2rem; }
-      .subpage-body { font-size: 1rem; margin-bottom: 20px; }
+      .subpage-body { font-size: 1rem; margin-bottom: 15px; }
 
       .subpage-btn-group {
         flex-direction: column;
@@ -656,7 +679,8 @@
       <div class="menu-item-row" data-platform="Discord" data-wedge="DISCORD" data-url="https://discord.com" data-desc="Connecting to Discord server... Join text and voice channels.">
         <span class="menu-item-num">05</span> Discord
       </div>
-      <div class="menu-item-row" data-platform="London is cute" data-wedge="LONDON" data-url="https://visitlondon.com" data-desc="Exploring London... Red phone boxes, cozy rainy afternoons, and infinite aesthetic vibes.">
+      <!-- Added data-img pointing to london.png -->
+      <div class="menu-item-row" data-platform="London is cute" data-wedge="LONDON" data-url="https://visitlondon.com" data-desc="Exploring London... Red phone boxes, cozy rainy afternoons, and infinite aesthetic vibes." data-img="london.png">
         <span class="menu-item-num">06</span> London is cute
       </div>
     </div>
@@ -667,6 +691,12 @@
     <div class="subpage-card" id="subpage-card">
       <h1 class="subpage-title" id="subpage-title">INSTAGRAM</h1>
       <p class="subpage-body" id="subpage-desc">Connecting to Instagram feed... View posts and stories.</p>
+      
+      <!-- Dynamic Image Frame Layer -->
+      <div class="subpage-img-frame" id="subpage-img-frame">
+        <img id="subpage-img" src="" alt="Preview Image">
+      </div>
+
       <div class="subpage-btn-group">
         <a href="#" target="_blank" class="p3r-action-btn" id="launch-btn">LAUNCH PROTOCOL &gt;</a>
         <button class="p3r-back-btn" id="back-btn">&lt; RETURN</button>
@@ -942,6 +972,8 @@
 
     const subpageTitle = document.getElementById('subpage-title');
     const subpageDesc = document.getElementById('subpage-desc');
+    const subpageImgFrame = document.getElementById('subpage-img-frame');
+    const subpageImg = document.getElementById('subpage-img');
     const launchBtn = document.getElementById('launch-btn');
     const backBtn = document.getElementById('back-btn');
 
@@ -1006,6 +1038,14 @@
       subpageTitle.textContent = row.dataset.platform;
       subpageDesc.textContent = row.dataset.desc;
       launchBtn.href = row.dataset.url;
+
+      // Dynamic Image Display Logic
+      if (row.dataset.img) {
+        subpageImg.src = row.dataset.img;
+        subpageImgFrame.style.display = 'block';
+      } else {
+        subpageImgFrame.style.display = 'none';
+      }
 
       setTimeout(() => document.body.classList.add('subpage-open'), 150);
     }
